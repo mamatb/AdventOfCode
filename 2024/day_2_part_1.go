@@ -14,11 +14,9 @@ func errCheck(err error) {
 	}
 }
 
-func isIncreasing(report []string) bool {
+func isIncreasing(report []int) bool {
 	var levelPrev int
-	for index, levelString := range report {
-		level, err := strconv.Atoi(levelString)
-		errCheck(err)
+	for index, level := range report {
 		if index > 0 && (level <= levelPrev || level-levelPrev > 3) {
 			return false
 		}
@@ -27,11 +25,9 @@ func isIncreasing(report []string) bool {
 	return true
 }
 
-func isDecreasing(report []string) bool {
+func isDecreasing(report []int) bool {
 	var levelPrev int
-	for index, levelString := range report {
-		level, err := strconv.Atoi(levelString)
-		errCheck(err)
+	for index, level := range report {
 		if index > 0 && (level >= levelPrev || levelPrev-level > 3) {
 			return false
 		}
@@ -47,7 +43,12 @@ func main() {
 	safeReports := 0
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
-		report := strings.Split(inputScanner.Text(), " ")
+		report := []int{}
+		for _, levelString := range strings.Split(inputScanner.Text(), " ") {
+			level, err := strconv.Atoi(levelString)
+			errCheck(err)
+			report = append(report, level)
+		}
 		if isIncreasing(report) || isDecreasing(report) {
 			safeReports += 1
 		}
