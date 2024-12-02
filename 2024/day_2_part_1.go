@@ -46,15 +46,11 @@ func main() {
 	defer input.Close()
 	safeReports := 0
 	inputScanner := bufio.NewScanner(input)
-	inputScan := inputScanner.Scan()
-	inputLine := inputScanner.Text()
-	for inputScan {
-		inputLineSplit := strings.Split(inputLine, " ")
-		if isIncreasing(inputLineSplit) || isDecreasing(inputLineSplit) {
+	for inputScanner.Scan() {
+		report := strings.Split(inputScanner.Text(), " ")
+		if isIncreasing(report) || isDecreasing(report) {
 			safeReports += 1
 		}
-		inputScan = inputScanner.Scan()
-		inputLine = inputScanner.Text()
 	}
 	fmt.Println(safeReports)
 }

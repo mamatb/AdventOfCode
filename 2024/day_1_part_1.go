@@ -22,18 +22,14 @@ func main() {
 	defer input.Close()
 	leftLocations, rightLocations := []int{}, []int{}
 	inputScanner := bufio.NewScanner(input)
-	inputScan := inputScanner.Scan()
-	inputLine := inputScanner.Text()
-	for inputScan {
-		inputLineSplit := strings.Split(inputLine, "   ")
-		leftLocation, err := strconv.Atoi(inputLineSplit[0])
+	for inputScanner.Scan() {
+		locations := strings.Split(inputScanner.Text(), "   ")
+		leftLocation, err := strconv.Atoi(locations[0])
 		errCheck(err)
 		leftLocations = append(leftLocations, leftLocation)
-		rightLocation, err := strconv.Atoi(inputLineSplit[1])
+		rightLocation, err := strconv.Atoi(locations[1])
 		errCheck(err)
 		rightLocations = append(rightLocations, rightLocation)
-		inputScan = inputScanner.Scan()
-		inputLine = inputScanner.Text()
 	}
 	sort.Ints(leftLocations)
 	sort.Ints(rightLocations)
