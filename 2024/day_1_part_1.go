@@ -34,8 +34,8 @@ func main() {
 	sort.Ints(leftLocations)
 	sort.Ints(rightLocations)
 	totalDistance := 0.0
-	for i := range leftLocations {
-		totalDistance += math.Abs(float64(leftLocations[i] - rightLocations[i]))
+	for index := range leftLocations {
+		totalDistance += math.Abs(float64(leftLocations[index] - rightLocations[index]))
 	}
 	fmt.Println(int(totalDistance))
 }
