@@ -18,7 +18,7 @@ func main() {
 	input, err := os.Open("day_1.txt")
 	errCheck(err)
 	defer input.Close()
-	leftLocations, rightLocations := map[int]int{}, map[int]int{}
+	leftLocations, rightLocations, similarity := map[int]int{}, map[int]int{}, 0
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		locations := strings.Split(inputScanner.Text(), "   ")
@@ -29,9 +29,8 @@ func main() {
 		errCheck(err)
 		rightLocations[rightLocation] += 1
 	}
-	similarityScore := 0
 	for key, value := range leftLocations {
-		similarityScore += key * value * rightLocations[key]
+		similarity += key * value * rightLocations[key]
 	}
-	fmt.Println(similarityScore)
+	fmt.Println(similarity)
 }

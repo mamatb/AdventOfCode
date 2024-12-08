@@ -24,8 +24,8 @@ func main() {
 	result, dontEnding := 0, false
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
-		for index, do := range strings.Split(inputScanner.Text(), "do()") {
-			if index == 0 && dontEnding {
+		for doIndex, do := range strings.Split(inputScanner.Text(), "do()") {
+			if doIndex == 0 && dontEnding {
 				continue
 			}
 			doSliced := strings.Split(do, "don't()")

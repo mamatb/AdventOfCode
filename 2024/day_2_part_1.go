@@ -16,8 +16,8 @@ func errCheck(err error) {
 
 func isIncreasing(report []int) bool {
 	var levelPrev int
-	for index, level := range report {
-		if index > 0 && (level <= levelPrev || level-levelPrev > 3) {
+	for levelIndex, level := range report {
+		if levelIndex > 0 && (level <= levelPrev || level-levelPrev > 3) {
 			return false
 		}
 		levelPrev = level
@@ -27,8 +27,8 @@ func isIncreasing(report []int) bool {
 
 func isDecreasing(report []int) bool {
 	var levelPrev int
-	for index, level := range report {
-		if index > 0 && (level >= levelPrev || levelPrev-level > 3) {
+	for levelIndex, level := range report {
+		if levelIndex > 0 && (level >= levelPrev || levelPrev-level > 3) {
 			return false
 		}
 		levelPrev = level

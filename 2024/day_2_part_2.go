@@ -16,13 +16,13 @@ func errCheck(err error) {
 
 func isIncreasing(report []int, dampenerAvailable bool) bool {
 	var levelPrev int
-	for index, level := range report {
-		if index > 0 && (level <= levelPrev || level-levelPrev > 3) {
+	for levelIndex, level := range report {
+		if levelIndex > 0 && (level <= levelPrev || level-levelPrev > 3) {
 			if dampenerAvailable {
-				dampenedL := append([]int{}, report...)
-				dampenedL = append(dampenedL[:index-1], dampenedL[index:]...)
-				dampenedR := append([]int{}, report...)
-				dampenedR = append(dampenedR[:index], dampenedR[index+1:]...)
+				dampenedL := append([]int{}, report[:levelIndex-1]...)
+				dampenedL = append(dampenedL, report[levelIndex:]...)
+				dampenedR := append([]int{}, report[:levelIndex]...)
+				dampenedR = append(dampenedR, report[levelIndex+1:]...)
 				return isIncreasing(dampenedL, false) || isIncreasing(dampenedR, false)
 			} else {
 				return false
@@ -35,13 +35,13 @@ func isIncreasing(report []int, dampenerAvailable bool) bool {
 
 func isDecreasing(report []int, dampenerAvailable bool) bool {
 	var levelPrev int
-	for index, level := range report {
-		if index > 0 && (level >= levelPrev || levelPrev-level > 3) {
+	for levelIndex, level := range report {
+		if levelIndex > 0 && (level >= levelPrev || levelPrev-level > 3) {
 			if dampenerAvailable {
-				dampenedL := append([]int{}, report...)
-				dampenedL = append(dampenedL[:index-1], dampenedL[index:]...)
-				dampenedR := append([]int{}, report...)
-				dampenedR = append(dampenedR[:index], dampenedR[index+1:]...)
+				dampenedL := append([]int{}, report[:levelIndex-1]...)
+				dampenedL = append(dampenedL, report[levelIndex:]...)
+				dampenedR := append([]int{}, report[:levelIndex]...)
+				dampenedR = append(dampenedR, report[levelIndex+1:]...)
 				return isDecreasing(dampenedL, false) || isDecreasing(dampenedR, false)
 			} else {
 				return false
