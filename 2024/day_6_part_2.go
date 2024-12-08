@@ -25,14 +25,13 @@ func errCheck(err error) {
 	}
 }
 
-func guardInMap(mapRows int, mapCols int, guardPos position) bool {
-	return (guardPos.row >= 0 &&
-		guardPos.row < mapRows &&
-		guardPos.col >= 0 &&
-		guardPos.col < mapCols)
+func posInMap(mapRows int, mapCols int, pos position) bool {
+	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
 
-func nextPosition(guardPos position, guardDir int) position {
+func nextPosDir(guardPos position, guardDir int, obstacles map[position]bool) (
+	position, int) {
+	guardPosBackup := guardPos
 	switch guardDir {
 	case north:
 		guardPos.row -= 1
@@ -43,30 +42,24 @@ func nextPosition(guardPos position, guardDir int) position {
 	default: // west
 		guardPos.col -= 1
 	}
-	return guardPos
-}
-
-func nextDirection(guardDir int) int {
-	return (guardDir + 1) % 4
+	if obstacles[guardPos] {
+		guardPos, guardDir = guardPosBackup, (guardDir+1)%4
+	}
+	return guardPos, guardDir
 }
 
 func loopInMap(mapRows int, mapCols int, guardPos position, guardDir int,
 	obstacles map[position]bool) bool {
-	visitedByDir := make([]map[position]bool, 4)
+	visitedByDir := []map[position]bool{}
 	for i := 0; i < 4; i++ {
-		visitedByDir[i] = map[position]bool{}
+		visitedByDir = append(visitedByDir, map[position]bool{})
 	}
-	for guardInMap(mapRows, mapCols, guardPos) {
+	for posInMap(mapRows, mapCols, guardPos) {
 		if visitedByDir[guardDir][guardPos] {
 			return true
 		}
 		visitedByDir[guardDir][guardPos] = true
-		guardPosBackup := guardPos
-		guardPos = nextPosition(guardPos, guardDir)
-		if obstacles[guardPos] {
-			guardPos = guardPosBackup
-			guardDir = nextDirection(guardDir)
-		}
+		guardPos, guardDir = nextPosDir(guardPos, guardDir, obstacles)
 	}
 	return false
 }
@@ -76,7 +69,7 @@ func main() {
 	errCheck(err)
 	defer input.Close()
 	mapRows, mapCols, loops, guardPos, guardDir := 0, 0, 0, position{}, north
-	gaps, obstacles := []position{}, map[position]bool{}
+	obstacles, visited := map[position]bool{}, map[position]bool{}
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		for col, symbol := range strings.Split(inputScanner.Text(), "") {
@@ -85,8 +78,6 @@ func main() {
 				guardPos.row, guardPos.col = mapRows, col
 			case "#":
 				obstacles[position{row: mapRows, col: col}] = true
-			default: // "."
-				gaps = append(gaps, position{row: mapRows, col: col})
 			}
 			if mapRows == 0 {
 				mapCols += 1
@@ -94,11 +85,15 @@ func main() {
 		}
 		mapRows += 1
 	}
-	for gapIndex, gap := range gaps {
-		if gapIndex > 0 {
-			delete(obstacles, gaps[gapIndex-1])
-		}
-		obstacles[gap] = true
+	reconPos, reconDir := nextPosDir(guardPos, guardDir, obstacles)
+	for posInMap(mapRows, mapCols, reconPos) {
+		visited[reconPos] = true
+		reconPos, reconDir = nextPosDir(reconPos, reconDir, obstacles)
+	}
+	var posPrev position
+	for pos := range visited {
+		obstacles[posPrev], obstacles[pos] = false, true
+		posPrev = pos
 		if loopInMap(mapRows, mapCols, guardPos, guardDir, obstacles) {
 			loops += 1
 		}

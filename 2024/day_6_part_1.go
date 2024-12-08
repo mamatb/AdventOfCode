@@ -25,14 +25,13 @@ func errCheck(err error) {
 	}
 }
 
-func guardInMap(mapRows int, mapCols int, guardPos position) bool {
-	return (guardPos.row >= 0 &&
-		guardPos.row < mapRows &&
-		guardPos.col >= 0 &&
-		guardPos.col < mapCols)
+func posInMap(mapRows int, mapCols int, pos position) bool {
+	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
 
-func nextPosition(guardPos position, guardDir int) position {
+func nextPosDir(guardPos position, guardDir int, obstacles map[position]bool) (
+	position, int) {
+	guardPosBackup := guardPos
 	switch guardDir {
 	case north:
 		guardPos.row -= 1
@@ -43,20 +42,18 @@ func nextPosition(guardPos position, guardDir int) position {
 	default: // west
 		guardPos.col -= 1
 	}
-	return guardPos
-}
-
-func nextDirection(guardDir int) int {
-	return (guardDir + 1) % 4
+	if obstacles[guardPos] {
+		guardPos, guardDir = guardPosBackup, (guardDir+1)%4
+	}
+	return guardPos, guardDir
 }
 
 func main() {
 	input, err := os.Open("day_6.txt")
 	errCheck(err)
 	defer input.Close()
-	mapRows, mapCols := 0, 0
+	mapRows, mapCols, guardPos, guardDir := 0, 0, position{}, north
 	obstacles, visited := map[position]bool{}, map[position]bool{}
-	guardPos, guardDir := position{}, north
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		for col, symbol := range strings.Split(inputScanner.Text(), "") {
@@ -72,14 +69,9 @@ func main() {
 		}
 		mapRows += 1
 	}
-	for guardInMap(mapRows, mapCols, guardPos) {
+	for posInMap(mapRows, mapCols, guardPos) {
 		visited[guardPos] = true
-		guardPosBackup := guardPos
-		guardPos = nextPosition(guardPos, guardDir)
-		if obstacles[guardPos] {
-			guardPos = guardPosBackup
-			guardDir = nextDirection(guardDir)
-		}
+		guardPos, guardDir = nextPosDir(guardPos, guardDir, obstacles)
 	}
 	fmt.Println(len(visited))
 }
