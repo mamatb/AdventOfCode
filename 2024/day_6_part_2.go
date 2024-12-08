@@ -50,13 +50,33 @@ func nextDirection(guardDir int) int {
 	return (guardDir + 1) % 4
 }
 
+func loopInMap(mapRows int, mapCols int, guardPos position, guardDir int,
+	obstacles map[position]bool) bool {
+	visitedByDir := make([]map[position]bool, 4)
+	for i := 0; i < 4; i++ {
+		visitedByDir[i] = map[position]bool{}
+	}
+	for guardInMap(mapRows, mapCols, guardPos) {
+		if visitedByDir[guardDir][guardPos] {
+			return true
+		}
+		visitedByDir[guardDir][guardPos] = true
+		guardPosBackup := guardPos
+		guardPos = nextPosition(guardPos, guardDir)
+		if obstacles[guardPos] {
+			guardPos = guardPosBackup
+			guardDir = nextDirection(guardDir)
+		}
+	}
+	return false
+}
+
 func main() {
 	input, err := os.Open("day_6.txt")
 	errCheck(err)
 	defer input.Close()
-	mapRows, mapCols := 0, 0
-	obstacles, visited := map[position]bool{}, map[position]bool{}
-	guardPos, guardDir := position{}, north
+	mapRows, mapCols, loops, guardPos, guardDir := 0, 0, 0, position{}, north
+	gaps, obstacles := []position{}, map[position]bool{}
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		for col, symbol := range strings.Split(inputScanner.Text(), "") {
@@ -65,6 +85,8 @@ func main() {
 				guardPos.row, guardPos.col = mapRows, col
 			case "#":
 				obstacles[position{row: mapRows, col: col}] = true
+			default: // "."
+				gaps = append(gaps, position{row: mapRows, col: col})
 			}
 			if mapRows == 0 {
 				mapCols += 1
@@ -72,14 +94,14 @@ func main() {
 		}
 		mapRows += 1
 	}
-	for guardInMap(mapRows, mapCols, guardPos) {
-		visited[guardPos] = true
-		guardPosBackup := guardPos
-		guardPos = nextPosition(guardPos, guardDir)
-		if obstacles[guardPos] {
-			guardPos = guardPosBackup
-			guardDir = nextDirection(guardDir)
+	for gapIndex, gap := range gaps {
+		if gapIndex > 0 {
+			delete(obstacles, gaps[gapIndex-1])
+		}
+		obstacles[gap] = true
+		if loopInMap(mapRows, mapCols, guardPos, guardDir, obstacles) {
+			loops += 1
 		}
 	}
-	fmt.Println(len(visited))
+	fmt.Println(loops)
 }
