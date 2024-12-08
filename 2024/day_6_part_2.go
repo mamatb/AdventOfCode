@@ -69,7 +69,7 @@ func main() {
 	errCheck(err)
 	defer input.Close()
 	mapRows, mapCols, loops, guardPos, guardDir := 0, 0, 0, position{}, north
-	obstacles, visited := map[position]bool{}, map[position]bool{}
+	obstacles := map[position]bool{}
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		for col, symbol := range strings.Split(inputScanner.Text(), "") {
@@ -85,18 +85,18 @@ func main() {
 		}
 		mapRows += 1
 	}
-	reconPos, reconDir := nextPosDir(guardPos, guardDir, obstacles)
-	for posInMap(mapRows, mapCols, reconPos) {
-		visited[reconPos] = true
-		reconPos, reconDir = nextPosDir(reconPos, reconDir, obstacles)
-	}
-	var posPrev position
-	for pos := range visited {
-		obstacles[posPrev], obstacles[pos] = false, true
-		posPrev = pos
-		if loopInMap(mapRows, mapCols, guardPos, guardDir, obstacles) {
-			loops += 1
+	visited, guardPosPrev := map[position]bool{guardPos: true}, guardPos
+	guardPos, guardDir = nextPosDir(guardPos, guardDir, obstacles)
+	for posInMap(mapRows, mapCols, guardPos) {
+		if !visited[guardPos] {
+			obstacles[guardPos] = true
+			if loopInMap(mapRows, mapCols, guardPosPrev, guardDir, obstacles) {
+				loops += 1
+			}
+			obstacles[guardPos], visited[guardPos] = false, true
 		}
+		guardPosPrev = guardPos
+		guardPos, guardDir = nextPosDir(guardPos, guardDir, obstacles)
 	}
 	fmt.Println(loops)
 }
