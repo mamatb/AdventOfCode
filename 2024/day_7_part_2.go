@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -22,7 +23,7 @@ func equationExists(result int, operators []int) bool {
 		operator, operators = operators[0], operators[1:]
 		for i := 0; i < resultsTempLen; i++ {
 			resultTemp, resultsTemp = resultsTemp[0], resultsTemp[1:]
-			resultAdd, resultMul := resultTemp, resultTemp
+			resultAdd, resultMul, resultCon := resultTemp, resultTemp, resultTemp
 			resultAdd += operator
 			if resultAdd <= result {
 				resultsTemp = append(resultsTemp, resultAdd)
@@ -30,6 +31,11 @@ func equationExists(result int, operators []int) bool {
 			resultMul *= operator
 			if resultMul <= result {
 				resultsTemp = append(resultsTemp, resultMul)
+			}
+			resultCon *= int(math.Pow10(int(math.Log10(float64(operator))) + 1))
+			resultCon += operator
+			if resultCon <= result {
+				resultsTemp = append(resultsTemp, resultCon)
 			}
 		}
 		resultsTempLen = len(resultsTemp)
