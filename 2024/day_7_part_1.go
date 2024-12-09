@@ -18,7 +18,7 @@ func equationExists(result int, operators []int) bool {
 	resultsTemp, resultsTempLen := make([]int, 1), 1
 	resultsTemp[0], operators = operators[0], operators[1:]
 	var operator, resultTemp int
-	for len(operators) > 0 {
+	for len(operators) > 0 && resultsTempLen > 0 {
 		operator, operators = operators[0], operators[1:]
 		for i := 0; i < resultsTempLen; i++ {
 			resultTemp, resultsTemp = resultsTemp[0], resultsTemp[1:]
