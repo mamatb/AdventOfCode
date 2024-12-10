@@ -28,15 +28,19 @@ func addAntinodes(antinodes map[position]bool, antennas []position, mapRows int,
 	for len(antennas) > 0 {
 		antenna, antennas = antennas[0], antennas[1:]
 		for _, antennaPrev := range antennasPrev {
-			antinodeOne := position{row: 2*antenna.row - antennaPrev.row,
-				col: 2*antenna.col - antennaPrev.col}
-			if posInMap(mapRows, mapCols, antinodeOne) {
-				antinodes[antinodeOne] = true
+			antennaDelta := position{row: antenna.row - antennaPrev.row,
+				col: antenna.col - antennaPrev.col}
+			antennaClone := antenna
+			for posInMap(mapRows, mapCols, antennaClone) {
+				antinodes[antennaClone] = true
+				antennaClone.row -= antennaDelta.row
+				antennaClone.col -= antennaDelta.col
 			}
-			antinodeTwo := position{row: 2*antennaPrev.row - antenna.row,
-				col: 2*antennaPrev.col - antenna.col}
-			if posInMap(mapRows, mapCols, antinodeTwo) {
-				antinodes[antinodeTwo] = true
+			antennaClone = antenna
+			for posInMap(mapRows, mapCols, antennaClone) {
+				antinodes[antennaClone] = true
+				antennaClone.row += antennaDelta.row
+				antennaClone.col += antennaDelta.col
 			}
 		}
 		antennasPrev = append(antennasPrev, antenna)
