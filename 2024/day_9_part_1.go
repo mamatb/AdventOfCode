@@ -57,8 +57,8 @@ func main() {
 	checksums := []int{}
 	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
-		diskmap, checksum := []int{}, 0
-		diskmap = expandDiskmap(diskmap, inputScanner.Text())
+		checksum := 0
+		diskmap := expandDiskmap([]int{}, inputScanner.Text())
 		diskmap = defragDiskmap(diskmap)
 		for fileIndex, fileId := range diskmap {
 			if fileId == -1 {
