@@ -25,7 +25,7 @@ func errCheck(err error) {
 	}
 }
 
-func posInMap(mapRows int, mapCols int, pos position) bool {
+func posInMap(pos position, mapRows int, mapCols int) bool {
 	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
 
@@ -54,7 +54,7 @@ func loopInMap(mapRows int, mapCols int, guardPos position, guardDir int,
 	for i := 0; i < 4; i++ {
 		visitedByDir = append(visitedByDir, map[position]bool{})
 	}
-	for posInMap(mapRows, mapCols, guardPos) {
+	for posInMap(guardPos, mapRows, mapCols) {
 		if visitedByDir[guardDir][guardPos] {
 			return true
 		}
@@ -87,7 +87,7 @@ func main() {
 	}
 	visited, guardPosPrev := map[position]bool{guardPos: true}, guardPos
 	guardPos, guardDir = nextPosDir(guardPos, guardDir, obstacles)
-	for posInMap(mapRows, mapCols, guardPos) {
+	for posInMap(guardPos, mapRows, mapCols) {
 		if !visited[guardPos] {
 			obstacles[guardPos] = true
 			if loopInMap(mapRows, mapCols, guardPosPrev, guardDir, obstacles) {

@@ -25,7 +25,7 @@ func errCheck(err error) {
 	}
 }
 
-func posInMap(mapRows int, mapCols int, pos position) bool {
+func posInMap(pos position, mapRows int, mapCols int) bool {
 	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
 
@@ -69,7 +69,7 @@ func main() {
 		}
 		mapRows += 1
 	}
-	for posInMap(mapRows, mapCols, guardPos) {
+	for posInMap(guardPos, mapRows, mapCols) {
 		visited[guardPos] = true
 		guardPos, guardDir = nextPosDir(guardPos, guardDir, obstacles)
 	}

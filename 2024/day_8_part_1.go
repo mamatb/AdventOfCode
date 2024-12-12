@@ -18,7 +18,7 @@ func errCheck(err error) {
 	}
 }
 
-func posInMap(mapRows int, mapCols int, pos position) bool {
+func posInMap(pos position, mapRows int, mapCols int) bool {
 	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
 
@@ -30,12 +30,12 @@ func addAntinodes(antinodes map[position]bool, antennas []position, mapRows int,
 		for _, antennaPrev := range antennasPrev {
 			antinodeOne := position{row: 2*antenna.row - antennaPrev.row,
 				col: 2*antenna.col - antennaPrev.col}
-			if posInMap(mapRows, mapCols, antinodeOne) {
+			if posInMap(antinodeOne, mapRows, mapCols) {
 				antinodes[antinodeOne] = true
 			}
 			antinodeTwo := position{row: 2*antennaPrev.row - antenna.row,
 				col: 2*antennaPrev.col - antenna.col}
-			if posInMap(mapRows, mapCols, antinodeTwo) {
+			if posInMap(antinodeTwo, mapRows, mapCols) {
 				antinodes[antinodeTwo] = true
 			}
 		}
