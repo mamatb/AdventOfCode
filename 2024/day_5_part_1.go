@@ -14,7 +14,7 @@ func errCheck(err error) {
 	}
 }
 
-func updateIsOrdered(rules map[string][]string, update []string) bool {
+func updateIsOrdered(update []string, rules map[string][]string) bool {
 	pagesPrev := map[string]bool{}
 	for _, page := range update {
 		for _, pageRule := range rules[page] {
@@ -42,7 +42,7 @@ func main() {
 	}
 	for inputScanner.Scan() {
 		update := strings.Split(inputScanner.Text(), ",")
-		if updateIsOrdered(rules, update) {
+		if updateIsOrdered(update, rules) {
 			middleNum, err := strconv.Atoi(update[len(update)/2])
 			errCheck(err)
 			middleNums += middleNum
