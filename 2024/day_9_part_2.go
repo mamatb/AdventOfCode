@@ -20,31 +20,27 @@ type diskSpace struct {
 	size  int
 }
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func expandDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace,
 	input string) ([]int, []diskFile, []diskSpace) {
 	fileId, free := 0, false
 	for _, digitString := range strings.Split(input, "") {
-		digit, err := strconv.Atoi(digitString)
-		errCheck(err)
-		if free {
-			diskSpaces = append(diskSpaces,
-				diskSpace{index: len(diskmap), size: digit})
-			for i := 0; i < digit; i++ {
-				diskmap = append(diskmap, -1)
+		if digit, err := strconv.Atoi(digitString); err == nil {
+			if free {
+				diskSpaces = append(diskSpaces,
+					diskSpace{index: len(diskmap), size: digit})
+				for i := 0; i < digit; i++ {
+					diskmap = append(diskmap, -1)
+				}
+			} else {
+				diskFiles = append(diskFiles,
+					diskFile{fileId: fileId, index: len(diskmap), size: digit})
+				for i := 0; i < digit; i++ {
+					diskmap = append(diskmap, fileId)
+				}
+				fileId += 1
 			}
 		} else {
-			diskFiles = append(diskFiles,
-				diskFile{fileId: fileId, index: len(diskmap), size: digit})
-			for i := 0; i < digit; i++ {
-				diskmap = append(diskmap, fileId)
-			}
-			fileId += 1
+			panic(err)
 		}
 		free = !free
 	}
@@ -54,7 +50,7 @@ func expandDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace,
 
 func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) []int {
 	for _, file := range diskFiles {
-		for spaceIndex, space := range diskSpaces {
+		for spaceIdx, space := range diskSpaces {
 			if space.index > file.index {
 				break
 			}
@@ -63,7 +59,7 @@ func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) 
 					diskmap[space.index+i] = diskmap[file.index+i]
 					diskmap[file.index+i] = -1
 				}
-				diskSpaces = append(diskSpaces[:spaceIndex], diskSpaces[spaceIndex+1:]...)
+				diskSpaces = append(diskSpaces[:spaceIdx], diskSpaces[spaceIdx+1:]...)
 				break
 			}
 			if file.size < space.size {
@@ -71,7 +67,7 @@ func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) 
 					diskmap[space.index+i] = diskmap[file.index+i]
 					diskmap[file.index+i] = -1
 				}
-				diskSpaces[spaceIndex] = diskSpace{index: space.index + file.size,
+				diskSpaces[spaceIdx] = diskSpace{index: space.index + file.size,
 					size: space.size - file.size}
 				break
 			}
@@ -81,19 +77,22 @@ func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) 
 }
 
 func main() {
-	input, err := os.Open("day_9.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_9.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	checksums := []int{}
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		checksum := 0
-		diskmap, diskFiles, diskSpaces := expandDiskmap(
-			[]int{}, []diskFile{}, []diskSpace{}, inputScanner.Text())
+		diskmap, diskFiles, diskSpaces := expandDiskmap([]int{}, []diskFile{},
+			[]diskSpace{}, inputScanner.Text())
 		diskmap = defragDiskmap(diskmap, diskFiles, diskSpaces)
-		for fileIndex, fileId := range diskmap {
+		for fileIdx, fileId := range diskmap {
 			if fileId != -1 {
-				checksum += fileIndex * fileId
+				checksum += fileIdx * fileId
 			}
 		}
 		checksums = append(checksums, checksum)

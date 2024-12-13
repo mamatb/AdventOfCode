@@ -8,26 +8,22 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func expandDiskmap(diskmap []int, input string) []int {
 	fileId, free := 0, false
 	for _, digitString := range strings.Split(input, "") {
-		digit, err := strconv.Atoi(digitString)
-		errCheck(err)
-		if free {
-			for i := 0; i < digit; i++ {
-				diskmap = append(diskmap, -1)
+		if digit, err := strconv.Atoi(digitString); err == nil {
+			if free {
+				for i := 0; i < digit; i++ {
+					diskmap = append(diskmap, -1)
+				}
+			} else {
+				for i := 0; i < digit; i++ {
+					diskmap = append(diskmap, fileId)
+				}
+				fileId += 1
 			}
 		} else {
-			for i := 0; i < digit; i++ {
-				diskmap = append(diskmap, fileId)
-			}
-			fileId += 1
+			panic(err)
 		}
 		free = !free
 	}
@@ -51,20 +47,23 @@ func defragDiskmap(diskmap []int) []int {
 }
 
 func main() {
-	input, err := os.Open("day_9.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_9.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	checksums := []int{}
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		checksum := 0
 		diskmap := expandDiskmap([]int{}, inputScanner.Text())
 		diskmap = defragDiskmap(diskmap)
-		for fileIndex, fileId := range diskmap {
+		for fileIdx, fileId := range diskmap {
 			if fileId == -1 {
 				break
 			}
-			checksum += fileIndex * fileId
+			checksum += fileIdx * fileId
 		}
 		checksums = append(checksums, checksum)
 	}

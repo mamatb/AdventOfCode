@@ -9,12 +9,6 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func equationExists(result int, operators []int) bool {
 	resultsTemp, resultsTempLen := make([]int, 1), 1
 	resultsTemp[0], operators = operators[0], operators[1:]
@@ -49,23 +43,29 @@ func equationExists(result int, operators []int) bool {
 }
 
 func main() {
-	input, err := os.Open("day_7.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_7.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	resultCalibration := 0
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
-		equation := strings.Split(inputScanner.Text(), ": ")
-		result, err := strconv.Atoi(equation[0])
-		errCheck(err)
-		operators := []int{}
+		equation, operators := strings.Split(inputScanner.Text(), ": "), []int{}
 		for _, numString := range strings.Split(equation[1], " ") {
-			num, err := strconv.Atoi(numString)
-			errCheck(err)
-			operators = append(operators, num)
+			if num, err := strconv.Atoi(numString); err == nil {
+				operators = append(operators, num)
+			} else {
+				panic(err)
+			}
 		}
-		if equationExists(result, operators) {
-			resultCalibration += result
+		if result, err := strconv.Atoi(equation[0]); err == nil {
+			if equationExists(result, operators) {
+				resultCalibration += result
+			}
+		} else {
+			panic(err)
 		}
 	}
 	fmt.Println(resultCalibration)

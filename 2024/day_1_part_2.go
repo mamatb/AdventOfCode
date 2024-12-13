@@ -8,26 +8,27 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
+func main() {
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_1.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
 		panic(err)
 	}
-}
-
-func main() {
-	input, err := os.Open("day_1.txt")
-	errCheck(err)
-	defer input.Close()
 	leftLocations, rightLocations, similarity := map[int]int{}, map[int]int{}, 0
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		locations := strings.Split(inputScanner.Text(), "   ")
-		leftLocation, err := strconv.Atoi(locations[0])
-		errCheck(err)
-		leftLocations[leftLocation] += 1
-		rightLocation, err := strconv.Atoi(locations[1])
-		errCheck(err)
-		rightLocations[rightLocation] += 1
+		if leftLocation, err := strconv.Atoi(locations[0]); err == nil {
+			leftLocations[leftLocation] += 1
+		} else {
+			panic(err)
+		}
+		if rightLocation, err := strconv.Atoi(locations[1]); err == nil {
+			rightLocations[rightLocation] += 1
+		} else {
+			panic(err)
+		}
 	}
 	for key, value := range leftLocations {
 		similarity += key * value * rightLocations[key]

@@ -7,102 +7,99 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
+func xmasHorizontal(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return colXIdx < len(matrix[rowXIdx])-3 &&
+		matrix[rowXIdx][colXIdx+1] == "M" &&
+		matrix[rowXIdx][colXIdx+2] == "A" &&
+		matrix[rowXIdx][colXIdx+3] == "S"
 }
 
-func xmasHorizontal(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexColX < len(matrix[indexRowX])-3 &&
-		matrix[indexRowX][indexColX+1] == "M" &&
-		matrix[indexRowX][indexColX+2] == "A" &&
-		matrix[indexRowX][indexColX+3] == "S")
+func xmasHorizontalRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return colXIdx > 2 &&
+		matrix[rowXIdx][colXIdx-1] == "M" &&
+		matrix[rowXIdx][colXIdx-2] == "A" &&
+		matrix[rowXIdx][colXIdx-3] == "S"
 }
 
-func xmasHorizontalRev(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexColX > 2 &&
-		matrix[indexRowX][indexColX-1] == "M" &&
-		matrix[indexRowX][indexColX-2] == "A" &&
-		matrix[indexRowX][indexColX-3] == "S")
+func xmasVertical(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return rowXIdx < len(matrix)-3 &&
+		matrix[rowXIdx+1][colXIdx] == "M" &&
+		matrix[rowXIdx+2][colXIdx] == "A" &&
+		matrix[rowXIdx+3][colXIdx] == "S"
 }
 
-func xmasVertical(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexRowX < len(matrix)-3 &&
-		matrix[indexRowX+1][indexColX] == "M" &&
-		matrix[indexRowX+2][indexColX] == "A" &&
-		matrix[indexRowX+3][indexColX] == "S")
+func xmasVerticalRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return rowXIdx > 2 &&
+		matrix[rowXIdx-1][colXIdx] == "M" &&
+		matrix[rowXIdx-2][colXIdx] == "A" &&
+		matrix[rowXIdx-3][colXIdx] == "S"
 }
 
-func xmasVerticalRev(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexRowX > 2 &&
-		matrix[indexRowX-1][indexColX] == "M" &&
-		matrix[indexRowX-2][indexColX] == "A" &&
-		matrix[indexRowX-3][indexColX] == "S")
+func xmasDiagonal(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return colXIdx < len(matrix[rowXIdx])-3 && rowXIdx < len(matrix)-3 &&
+		matrix[rowXIdx+1][colXIdx+1] == "M" &&
+		matrix[rowXIdx+2][colXIdx+2] == "A" &&
+		matrix[rowXIdx+3][colXIdx+3] == "S"
 }
 
-func xmasDiagonal(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexColX < len(matrix[indexRowX])-3 && indexRowX < len(matrix)-3 &&
-		matrix[indexRowX+1][indexColX+1] == "M" &&
-		matrix[indexRowX+2][indexColX+2] == "A" &&
-		matrix[indexRowX+3][indexColX+3] == "S")
+func xmasDiagonalRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return colXIdx > 2 && rowXIdx > 2 &&
+		matrix[rowXIdx-1][colXIdx-1] == "M" &&
+		matrix[rowXIdx-2][colXIdx-2] == "A" &&
+		matrix[rowXIdx-3][colXIdx-3] == "S"
 }
 
-func xmasDiagonalRev(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexColX > 2 && indexRowX > 2 &&
-		matrix[indexRowX-1][indexColX-1] == "M" &&
-		matrix[indexRowX-2][indexColX-2] == "A" &&
-		matrix[indexRowX-3][indexColX-3] == "S")
+func xmasAntidiag(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return colXIdx < len(matrix[rowXIdx])-3 && rowXIdx > 2 &&
+		matrix[rowXIdx-1][colXIdx+1] == "M" &&
+		matrix[rowXIdx-2][colXIdx+2] == "A" &&
+		matrix[rowXIdx-3][colXIdx+3] == "S"
 }
 
-func xmasAntidiag(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexColX < len(matrix[indexRowX])-3 && indexRowX > 2 &&
-		matrix[indexRowX-1][indexColX+1] == "M" &&
-		matrix[indexRowX-2][indexColX+2] == "A" &&
-		matrix[indexRowX-3][indexColX+3] == "S")
-}
-
-func xmasAntidiagRev(matrix [][]string, indexRowX int, indexColX int) bool {
-	return (indexColX > 2 && indexRowX < len(matrix)-3 &&
-		matrix[indexRowX+1][indexColX-1] == "M" &&
-		matrix[indexRowX+2][indexColX-2] == "A" &&
-		matrix[indexRowX+3][indexColX-3] == "S")
+func xmasAntidiagRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
+	return colXIdx > 2 && rowXIdx < len(matrix)-3 &&
+		matrix[rowXIdx+1][colXIdx-1] == "M" &&
+		matrix[rowXIdx+2][colXIdx-2] == "A" &&
+		matrix[rowXIdx+3][colXIdx-3] == "S"
 }
 
 func main() {
-	input, err := os.Open("day_4.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_4.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	inputMatrix, xmasCount := [][]string{}, 0
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		inputMatrix = append(inputMatrix, strings.Split(inputScanner.Text(), ""))
 	}
-	for indexRow := range inputMatrix {
-		for indexCol := range inputMatrix[indexRow] {
-			if inputMatrix[indexRow][indexCol] == "X" {
-				if xmasHorizontal(inputMatrix, indexRow, indexCol) {
+	for rowIdx := range inputMatrix {
+		for colIdx := range inputMatrix[rowIdx] {
+			if inputMatrix[rowIdx][colIdx] == "X" {
+				if xmasHorizontal(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
-				if xmasHorizontalRev(inputMatrix, indexRow, indexCol) {
+				if xmasHorizontalRev(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
-				if xmasVertical(inputMatrix, indexRow, indexCol) {
+				if xmasVertical(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
-				if xmasVerticalRev(inputMatrix, indexRow, indexCol) {
+				if xmasVerticalRev(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
-				if xmasDiagonal(inputMatrix, indexRow, indexCol) {
+				if xmasDiagonal(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
-				if xmasDiagonalRev(inputMatrix, indexRow, indexCol) {
+				if xmasDiagonalRev(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
-				if xmasAntidiag(inputMatrix, indexRow, indexCol) {
+				if xmasAntidiag(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
-				if xmasAntidiagRev(inputMatrix, indexRow, indexCol) {
+				if xmasAntidiagRev(inputMatrix, rowIdx, colIdx) {
 					xmasCount += 1
 				}
 			}

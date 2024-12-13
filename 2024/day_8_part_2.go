@@ -12,12 +12,6 @@ type position struct {
 	col int
 }
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func posInMap(pos position, mapRows int, mapCols int) bool {
 	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
@@ -49,11 +43,15 @@ func addAntinodes(antinodes map[position]bool, antennas []position, mapRows int,
 }
 
 func main() {
-	input, err := os.Open("day_8.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_8.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	antennasByFreq, antinodes := map[string][]position{}, map[position]bool{}
-	mapRows, mapCols, inputScanner := 0, 0, bufio.NewScanner(input)
+	mapRows, mapCols := 0, 0
 	for inputScanner.Scan() {
 		for col, freq := range strings.Split(inputScanner.Text(), "") {
 			if freq != "." {

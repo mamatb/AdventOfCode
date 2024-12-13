@@ -13,12 +13,6 @@ type position struct {
 	col int
 }
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func posInMap(pos position, mapRows int, mapCols int) bool {
 	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
@@ -46,19 +40,24 @@ func getRating(trailhead position, topomap [][]int) int {
 }
 
 func main() {
-	input, err := os.Open("day_10.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_10.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	rating, row, topomap, trailheads := 0, 0, [][]int{}, []position{}
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		topomap = append(topomap, []int{})
 		for col, heightString := range strings.Split(inputScanner.Text(), "") {
-			height, err := strconv.Atoi(heightString)
-			errCheck(err)
-			topomap[row] = append(topomap[row], height)
-			if height == 0 {
-				trailheads = append(trailheads, position{row: row, col: col})
+			if height, err := strconv.Atoi(heightString); err == nil {
+				topomap[row] = append(topomap[row], height)
+				if height == 0 {
+					trailheads = append(trailheads, position{row: row, col: col})
+				}
+			} else {
+				panic(err)
 			}
 		}
 		row += 1

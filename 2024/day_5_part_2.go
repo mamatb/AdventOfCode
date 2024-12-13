@@ -9,12 +9,6 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func updateIsOrdered(update []string, rules map[string][]string) bool {
 	pagesPrev := map[string]bool{}
 	for _, page := range update {
@@ -30,12 +24,12 @@ func updateIsOrdered(update []string, rules map[string][]string) bool {
 
 func updateOrdered(update []string, rules map[string][]string) []string {
 	pagesPrev := map[string]bool{}
-	for pageIndex, page := range update {
+	for pageIdx, page := range update {
 		for _, pageRule := range rules[page] {
 			if pagesPrev[pageRule] {
-				update = append(update[:pageIndex], update[pageIndex+1:]...)
-				pageIndex = slices.Index(update, pageRule)
-				update = slices.Insert(update, pageIndex, page)
+				update = append(update[:pageIdx], update[pageIdx+1:]...)
+				pageIdx = slices.Index(update, pageRule)
+				update = slices.Insert(update, pageIdx, page)
 				return updateOrdered(update, rules)
 			}
 		}
@@ -45,11 +39,14 @@ func updateOrdered(update []string, rules map[string][]string) []string {
 }
 
 func main() {
-	input, err := os.Open("day_5.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_5.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	middleNums, rules := 0, map[string][]string{}
-	inputScanner := bufio.NewScanner(input)
 	inputScanner.Scan()
 	rule := strings.Split(inputScanner.Text(), "|")
 	for len(rule) > 1 {
@@ -61,9 +58,11 @@ func main() {
 		update := strings.Split(inputScanner.Text(), ",")
 		if !updateIsOrdered(update, rules) {
 			update = updateOrdered(update, rules)
-			middleNum, err := strconv.Atoi(update[len(update)/2])
-			errCheck(err)
-			middleNums += middleNum
+			if middleNum, err := strconv.Atoi(update[len(update)/2]); err == nil {
+				middleNums += middleNum
+			} else {
+				panic(err)
+			}
 		}
 	}
 	fmt.Println(middleNums)

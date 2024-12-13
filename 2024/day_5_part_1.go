@@ -8,12 +8,6 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func updateIsOrdered(update []string, rules map[string][]string) bool {
 	pagesPrev := map[string]bool{}
 	for _, page := range update {
@@ -28,11 +22,14 @@ func updateIsOrdered(update []string, rules map[string][]string) bool {
 }
 
 func main() {
-	input, err := os.Open("day_5.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_5.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	middleNums, rules := 0, map[string][]string{}
-	inputScanner := bufio.NewScanner(input)
 	inputScanner.Scan()
 	rule := strings.Split(inputScanner.Text(), "|")
 	for len(rule) > 1 {
@@ -43,9 +40,11 @@ func main() {
 	for inputScanner.Scan() {
 		update := strings.Split(inputScanner.Text(), ",")
 		if updateIsOrdered(update, rules) {
-			middleNum, err := strconv.Atoi(update[len(update)/2])
-			errCheck(err)
-			middleNums += middleNum
+			if middleNum, err := strconv.Atoi(update[len(update)/2]); err == nil {
+				middleNums += middleNum
+			} else {
+				panic(err)
+			}
 		}
 	}
 	fmt.Println(middleNums)

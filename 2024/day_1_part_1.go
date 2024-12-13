@@ -10,31 +10,32 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
+func main() {
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_1.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
 		panic(err)
 	}
-}
-
-func main() {
-	input, err := os.Open("day_1.txt")
-	errCheck(err)
-	defer input.Close()
-	leftLocations, rightLocations, totalDistance := []int{}, []int{}, 0.0
-	inputScanner := bufio.NewScanner(input)
+	leftLocs, rightLocs, totalDistance := []int{}, []int{}, 0.0
 	for inputScanner.Scan() {
 		locations := strings.Split(inputScanner.Text(), "   ")
-		leftLocation, err := strconv.Atoi(locations[0])
-		errCheck(err)
-		leftLocations = append(leftLocations, leftLocation)
-		rightLocation, err := strconv.Atoi(locations[1])
-		errCheck(err)
-		rightLocations = append(rightLocations, rightLocation)
+		if leftLocation, err := strconv.Atoi(locations[0]); err == nil {
+			leftLocs = append(leftLocs, leftLocation)
+		} else {
+			panic(err)
+		}
+		if rightLocation, err := strconv.Atoi(locations[1]); err == nil {
+			rightLocs = append(rightLocs, rightLocation)
+		} else {
+			panic(err)
+		}
 	}
-	sort.Ints(leftLocations)
-	sort.Ints(rightLocations)
-	for index := range leftLocations {
-		totalDistance += math.Abs(float64(leftLocations[index] - rightLocations[index]))
+	sort.Ints(leftLocs)
+	sort.Ints(rightLocs)
+	for index := range leftLocs {
+		totalDistance += math.Abs(float64(leftLocs[index] - rightLocs[index]))
 	}
 	fmt.Println(int(totalDistance))
 }

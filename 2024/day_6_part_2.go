@@ -19,12 +19,6 @@ type position struct {
 	col int
 }
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func posInMap(pos position, mapRows int, mapCols int) bool {
 	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
@@ -65,12 +59,15 @@ func loopInMap(mapRows int, mapCols int, guardPos position, guardDir int,
 }
 
 func main() {
-	input, err := os.Open("day_6.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_6.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	mapRows, mapCols, loops, guardPos, guardDir := 0, 0, 0, position{}, north
 	obstacles := map[position]bool{}
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		for col, symbol := range strings.Split(inputScanner.Text(), "") {
 			switch symbol {

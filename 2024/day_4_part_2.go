@@ -7,56 +7,53 @@ import (
 	"strings"
 )
 
-func errCheck(err error) {
-	if err != nil {
-		panic(err)
-	}
+func masDiagonal(matrix [][]string, rowAIdx int, colAIdx int) bool {
+	return rowAIdx > 0 && colAIdx > 0 &&
+		matrix[rowAIdx-1][colAIdx-1] == "M" &&
+		rowAIdx < len(matrix)-1 && colAIdx < len(matrix[rowAIdx])-1 &&
+		matrix[rowAIdx+1][colAIdx+1] == "S"
 }
 
-func masDiagonal(matrix [][]string, indexRowA int, indexColA int) bool {
-	return (indexRowA > 0 && indexColA > 0 &&
-		matrix[indexRowA-1][indexColA-1] == "M" &&
-		indexRowA < len(matrix)-1 && indexColA < len(matrix[indexRowA])-1 &&
-		matrix[indexRowA+1][indexColA+1] == "S")
+func masDiagonalRev(matrix [][]string, rowAIdx int, colAIdx int) bool {
+	return rowAIdx > 0 && colAIdx > 0 &&
+		matrix[rowAIdx-1][colAIdx-1] == "S" &&
+		rowAIdx < len(matrix)-1 && colAIdx < len(matrix[rowAIdx])-1 &&
+		matrix[rowAIdx+1][colAIdx+1] == "M"
 }
 
-func masDiagonalRev(matrix [][]string, indexRowA int, indexColA int) bool {
-	return (indexRowA > 0 && indexColA > 0 &&
-		matrix[indexRowA-1][indexColA-1] == "S" &&
-		indexRowA < len(matrix)-1 && indexColA < len(matrix[indexRowA])-1 &&
-		matrix[indexRowA+1][indexColA+1] == "M")
+func masAntidiag(matrix [][]string, rowAIdx int, colAIdx int) bool {
+	return rowAIdx < len(matrix)-1 && colAIdx > 0 &&
+		matrix[rowAIdx+1][colAIdx-1] == "M" &&
+		rowAIdx > 0 && colAIdx < len(matrix[rowAIdx])-1 &&
+		matrix[rowAIdx-1][colAIdx+1] == "S"
 }
 
-func masAntidiag(matrix [][]string, indexRowA int, indexColA int) bool {
-	return (indexRowA < len(matrix)-1 && indexColA > 0 &&
-		matrix[indexRowA+1][indexColA-1] == "M" &&
-		indexRowA > 0 && indexColA < len(matrix[indexRowA])-1 &&
-		matrix[indexRowA-1][indexColA+1] == "S")
-}
-
-func masAntidiagRev(matrix [][]string, indexRowA int, indexColA int) bool {
-	return (indexRowA < len(matrix)-1 && indexColA > 0 &&
-		matrix[indexRowA+1][indexColA-1] == "S" &&
-		indexRowA > 0 && indexColA < len(matrix[indexRowA])-1 &&
-		matrix[indexRowA-1][indexColA+1] == "M")
+func masAntidiagRev(matrix [][]string, rowAIdx int, colAIdx int) bool {
+	return rowAIdx < len(matrix)-1 && colAIdx > 0 &&
+		matrix[rowAIdx+1][colAIdx-1] == "S" &&
+		rowAIdx > 0 && colAIdx < len(matrix[rowAIdx])-1 &&
+		matrix[rowAIdx-1][colAIdx+1] == "M"
 }
 
 func main() {
-	input, err := os.Open("day_4.txt")
-	errCheck(err)
-	defer input.Close()
+	var inputScanner *bufio.Scanner
+	if input, err := os.Open("day_4.txt"); err == nil {
+		defer input.Close()
+		inputScanner = bufio.NewScanner(input)
+	} else {
+		panic(err)
+	}
 	inputMatrix, xmasCount := [][]string{}, 0
-	inputScanner := bufio.NewScanner(input)
 	for inputScanner.Scan() {
 		inputMatrix = append(inputMatrix, strings.Split(inputScanner.Text(), ""))
 	}
-	for indexRow := range inputMatrix {
-		for indexCol := range inputMatrix[indexRow] {
-			if inputMatrix[indexRow][indexCol] == "A" {
-				if (masDiagonal(inputMatrix, indexRow, indexCol) ||
-					masDiagonalRev(inputMatrix, indexRow, indexCol)) &&
-					(masAntidiag(inputMatrix, indexRow, indexCol) ||
-						masAntidiagRev(inputMatrix, indexRow, indexCol)) {
+	for rowIdx := range inputMatrix {
+		for colIdx := range inputMatrix[rowIdx] {
+			if inputMatrix[rowIdx][colIdx] == "A" {
+				if (masDiagonal(inputMatrix, rowIdx, colIdx) ||
+					masDiagonalRev(inputMatrix, rowIdx, colIdx)) &&
+					(masAntidiag(inputMatrix, rowIdx, colIdx) ||
+						masAntidiagRev(inputMatrix, rowIdx, colIdx)) {
 					xmasCount += 1
 				}
 			}
