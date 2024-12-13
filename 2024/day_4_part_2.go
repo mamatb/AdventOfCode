@@ -7,32 +7,37 @@ import (
 	"strings"
 )
 
-func masDiagonal(matrix [][]string, rowAIdx int, colAIdx int) bool {
-	return rowAIdx > 0 && colAIdx > 0 &&
-		matrix[rowAIdx-1][colAIdx-1] == "M" &&
-		rowAIdx < len(matrix)-1 && colAIdx < len(matrix[rowAIdx])-1 &&
-		matrix[rowAIdx+1][colAIdx+1] == "S"
+type position struct {
+	row int
+	col int
 }
 
-func masDiagonalRev(matrix [][]string, rowAIdx int, colAIdx int) bool {
-	return rowAIdx > 0 && colAIdx > 0 &&
-		matrix[rowAIdx-1][colAIdx-1] == "S" &&
-		rowAIdx < len(matrix)-1 && colAIdx < len(matrix[rowAIdx])-1 &&
-		matrix[rowAIdx+1][colAIdx+1] == "M"
+func masDiagonal(posA position, matrix [][]string) bool {
+	return posA.row > 0 && posA.col > 0 &&
+		matrix[posA.row-1][posA.col-1] == "M" &&
+		posA.row < len(matrix)-1 && posA.col < len(matrix[posA.row])-1 &&
+		matrix[posA.row+1][posA.col+1] == "S"
 }
 
-func masAntidiag(matrix [][]string, rowAIdx int, colAIdx int) bool {
-	return rowAIdx < len(matrix)-1 && colAIdx > 0 &&
-		matrix[rowAIdx+1][colAIdx-1] == "M" &&
-		rowAIdx > 0 && colAIdx < len(matrix[rowAIdx])-1 &&
-		matrix[rowAIdx-1][colAIdx+1] == "S"
+func masDiagonalRev(posA position, matrix [][]string) bool {
+	return posA.row > 0 && posA.col > 0 &&
+		matrix[posA.row-1][posA.col-1] == "S" &&
+		posA.row < len(matrix)-1 && posA.col < len(matrix[posA.row])-1 &&
+		matrix[posA.row+1][posA.col+1] == "M"
 }
 
-func masAntidiagRev(matrix [][]string, rowAIdx int, colAIdx int) bool {
-	return rowAIdx < len(matrix)-1 && colAIdx > 0 &&
-		matrix[rowAIdx+1][colAIdx-1] == "S" &&
-		rowAIdx > 0 && colAIdx < len(matrix[rowAIdx])-1 &&
-		matrix[rowAIdx-1][colAIdx+1] == "M"
+func masAntidiag(posA position, matrix [][]string) bool {
+	return posA.row < len(matrix)-1 && posA.col > 0 &&
+		matrix[posA.row+1][posA.col-1] == "M" &&
+		posA.row > 0 && posA.col < len(matrix[posA.row])-1 &&
+		matrix[posA.row-1][posA.col+1] == "S"
+}
+
+func masAntidiagRev(posA position, matrix [][]string) bool {
+	return posA.row < len(matrix)-1 && posA.col > 0 &&
+		matrix[posA.row+1][posA.col-1] == "S" &&
+		posA.row > 0 && posA.col < len(matrix[posA.row])-1 &&
+		matrix[posA.row-1][posA.col+1] == "M"
 }
 
 func main() {
@@ -43,20 +48,21 @@ func main() {
 	} else {
 		panic(err)
 	}
-	inputMatrix, xmasCount := [][]string{}, 0
+	wordSearch, row, positionsA, xmasCount := [][]string{}, 0, []position{}, 0
 	for inputScanner.Scan() {
-		inputMatrix = append(inputMatrix, strings.Split(inputScanner.Text(), ""))
-	}
-	for rowIdx := range inputMatrix {
-		for colIdx := range inputMatrix[rowIdx] {
-			if inputMatrix[rowIdx][colIdx] == "A" {
-				if (masDiagonal(inputMatrix, rowIdx, colIdx) ||
-					masDiagonalRev(inputMatrix, rowIdx, colIdx)) &&
-					(masAntidiag(inputMatrix, rowIdx, colIdx) ||
-						masAntidiagRev(inputMatrix, rowIdx, colIdx)) {
-					xmasCount += 1
-				}
+		wordSearch = append(wordSearch, []string{})
+		for col, letter := range strings.Split(inputScanner.Text(), "") {
+			wordSearch[row] = append(wordSearch[row], letter)
+			if letter == "A" {
+				positionsA = append(positionsA, position{row: row, col: col})
 			}
+		}
+		row += 1
+	}
+	for _, posA := range positionsA {
+		if (masDiagonal(posA, wordSearch) || masDiagonalRev(posA, wordSearch)) &&
+			(masAntidiag(posA, wordSearch) || masAntidiagRev(posA, wordSearch)) {
+			xmasCount += 1
 		}
 	}
 	fmt.Println(xmasCount)

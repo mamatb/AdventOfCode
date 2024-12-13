@@ -7,60 +7,65 @@ import (
 	"strings"
 )
 
-func xmasHorizontal(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return colXIdx < len(matrix[rowXIdx])-3 &&
-		matrix[rowXIdx][colXIdx+1] == "M" &&
-		matrix[rowXIdx][colXIdx+2] == "A" &&
-		matrix[rowXIdx][colXIdx+3] == "S"
+type position struct {
+	row int
+	col int
 }
 
-func xmasHorizontalRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return colXIdx > 2 &&
-		matrix[rowXIdx][colXIdx-1] == "M" &&
-		matrix[rowXIdx][colXIdx-2] == "A" &&
-		matrix[rowXIdx][colXIdx-3] == "S"
+func xmasHorizontal(posX position, matrix [][]string) bool {
+	return posX.col < len(matrix[posX.row])-3 &&
+		matrix[posX.row][posX.col+1] == "M" &&
+		matrix[posX.row][posX.col+2] == "A" &&
+		matrix[posX.row][posX.col+3] == "S"
 }
 
-func xmasVertical(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return rowXIdx < len(matrix)-3 &&
-		matrix[rowXIdx+1][colXIdx] == "M" &&
-		matrix[rowXIdx+2][colXIdx] == "A" &&
-		matrix[rowXIdx+3][colXIdx] == "S"
+func xmasHorizontalRev(posX position, matrix [][]string) bool {
+	return posX.col > 2 &&
+		matrix[posX.row][posX.col-1] == "M" &&
+		matrix[posX.row][posX.col-2] == "A" &&
+		matrix[posX.row][posX.col-3] == "S"
 }
 
-func xmasVerticalRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return rowXIdx > 2 &&
-		matrix[rowXIdx-1][colXIdx] == "M" &&
-		matrix[rowXIdx-2][colXIdx] == "A" &&
-		matrix[rowXIdx-3][colXIdx] == "S"
+func xmasVertical(posX position, matrix [][]string) bool {
+	return posX.row < len(matrix)-3 &&
+		matrix[posX.row+1][posX.col] == "M" &&
+		matrix[posX.row+2][posX.col] == "A" &&
+		matrix[posX.row+3][posX.col] == "S"
 }
 
-func xmasDiagonal(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return colXIdx < len(matrix[rowXIdx])-3 && rowXIdx < len(matrix)-3 &&
-		matrix[rowXIdx+1][colXIdx+1] == "M" &&
-		matrix[rowXIdx+2][colXIdx+2] == "A" &&
-		matrix[rowXIdx+3][colXIdx+3] == "S"
+func xmasVerticalRev(posX position, matrix [][]string) bool {
+	return posX.row > 2 &&
+		matrix[posX.row-1][posX.col] == "M" &&
+		matrix[posX.row-2][posX.col] == "A" &&
+		matrix[posX.row-3][posX.col] == "S"
 }
 
-func xmasDiagonalRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return colXIdx > 2 && rowXIdx > 2 &&
-		matrix[rowXIdx-1][colXIdx-1] == "M" &&
-		matrix[rowXIdx-2][colXIdx-2] == "A" &&
-		matrix[rowXIdx-3][colXIdx-3] == "S"
+func xmasDiagonal(posX position, matrix [][]string) bool {
+	return posX.col < len(matrix[posX.row])-3 && posX.row < len(matrix)-3 &&
+		matrix[posX.row+1][posX.col+1] == "M" &&
+		matrix[posX.row+2][posX.col+2] == "A" &&
+		matrix[posX.row+3][posX.col+3] == "S"
 }
 
-func xmasAntidiag(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return colXIdx < len(matrix[rowXIdx])-3 && rowXIdx > 2 &&
-		matrix[rowXIdx-1][colXIdx+1] == "M" &&
-		matrix[rowXIdx-2][colXIdx+2] == "A" &&
-		matrix[rowXIdx-3][colXIdx+3] == "S"
+func xmasDiagonalRev(posX position, matrix [][]string) bool {
+	return posX.col > 2 && posX.row > 2 &&
+		matrix[posX.row-1][posX.col-1] == "M" &&
+		matrix[posX.row-2][posX.col-2] == "A" &&
+		matrix[posX.row-3][posX.col-3] == "S"
 }
 
-func xmasAntidiagRev(matrix [][]string, rowXIdx int, colXIdx int) bool {
-	return colXIdx > 2 && rowXIdx < len(matrix)-3 &&
-		matrix[rowXIdx+1][colXIdx-1] == "M" &&
-		matrix[rowXIdx+2][colXIdx-2] == "A" &&
-		matrix[rowXIdx+3][colXIdx-3] == "S"
+func xmasAntidiag(posX position, matrix [][]string) bool {
+	return posX.col < len(matrix[posX.row])-3 && posX.row > 2 &&
+		matrix[posX.row-1][posX.col+1] == "M" &&
+		matrix[posX.row-2][posX.col+2] == "A" &&
+		matrix[posX.row-3][posX.col+3] == "S"
+}
+
+func xmasAntidiagRev(posX position, matrix [][]string) bool {
+	return posX.col > 2 && posX.row < len(matrix)-3 &&
+		matrix[posX.row+1][posX.col-1] == "M" &&
+		matrix[posX.row+2][posX.col-2] == "A" &&
+		matrix[posX.row+3][posX.col-3] == "S"
 }
 
 func main() {
@@ -71,38 +76,41 @@ func main() {
 	} else {
 		panic(err)
 	}
-	inputMatrix, xmasCount := [][]string{}, 0
+	wordSearch, row, positionsX, xmasCount := [][]string{}, 0, []position{}, 0
 	for inputScanner.Scan() {
-		inputMatrix = append(inputMatrix, strings.Split(inputScanner.Text(), ""))
-	}
-	for rowIdx := range inputMatrix {
-		for colIdx := range inputMatrix[rowIdx] {
-			if inputMatrix[rowIdx][colIdx] == "X" {
-				if xmasHorizontal(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
-				if xmasHorizontalRev(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
-				if xmasVertical(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
-				if xmasVerticalRev(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
-				if xmasDiagonal(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
-				if xmasDiagonalRev(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
-				if xmasAntidiag(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
-				if xmasAntidiagRev(inputMatrix, rowIdx, colIdx) {
-					xmasCount += 1
-				}
+		wordSearch = append(wordSearch, []string{})
+		for col, letter := range strings.Split(inputScanner.Text(), "") {
+			wordSearch[row] = append(wordSearch[row], letter)
+			if letter == "X" {
+				positionsX = append(positionsX, position{row: row, col: col})
 			}
+		}
+		row += 1
+	}
+	for _, posX := range positionsX {
+		if xmasHorizontal(posX, wordSearch) {
+			xmasCount += 1
+		}
+		if xmasHorizontalRev(posX, wordSearch) {
+			xmasCount += 1
+		}
+		if xmasVertical(posX, wordSearch) {
+			xmasCount += 1
+		}
+		if xmasVerticalRev(posX, wordSearch) {
+			xmasCount += 1
+		}
+		if xmasDiagonal(posX, wordSearch) {
+			xmasCount += 1
+		}
+		if xmasDiagonalRev(posX, wordSearch) {
+			xmasCount += 1
+		}
+		if xmasAntidiag(posX, wordSearch) {
+			xmasCount += 1
+		}
+		if xmasAntidiagRev(posX, wordSearch) {
+			xmasCount += 1
 		}
 	}
 	fmt.Println(xmasCount)
