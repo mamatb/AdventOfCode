@@ -12,6 +12,13 @@ type position struct {
 	col int
 }
 
+type posBorder struct {
+	horizontal bool
+	indexIn    int
+	indexOut   int
+	location   int
+}
+
 func posInMap(pos position, mapRows int, mapCols int) bool {
 	return pos.row >= 0 && pos.row < mapRows && pos.col >= 0 && pos.col < mapCols
 }
@@ -43,16 +50,36 @@ func getRegion(garden [][]string, inRegion map[position]bool,
 }
 
 func getPrice(region map[position]bool) int {
-	area, perimeter := len(region), 0
+	area, sides, borders := len(region), 0, map[posBorder]bool{}
 	for pos := range region {
-		perimeter += 4
 		for _, posN := range getNeighbours(pos) {
-			if region[posN] {
-				perimeter -= 1
+			if !region[posN] {
+				if pos.col == posN.col { // north, south
+					borders[posBorder{
+						horizontal: true,
+						indexIn:    pos.row,
+						indexOut:   posN.row,
+						location:   pos.col}] = true
+				} else { // east, west
+					borders[posBorder{
+						horizontal: false,
+						indexIn:    pos.col,
+						indexOut:   posN.col,
+						location:   pos.row}] = true
+				}
 			}
 		}
 	}
-	return area * perimeter
+	for border := range borders {
+		if !borders[posBorder{
+			horizontal: border.horizontal,
+			indexIn:    border.indexIn,
+			indexOut:   border.indexOut,
+			location:   border.location + 1}] {
+			sides += 1
+		}
+	}
+	return area * sides
 }
 
 func main() {
