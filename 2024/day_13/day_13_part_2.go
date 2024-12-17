@@ -9,7 +9,7 @@ import (
 )
 
 func isPushNum(num float64) bool {
-	return num > 0 && num < 100 && float64(int(num)) == num
+	return num > 0 && float64(int(num)) == num
 }
 
 func solveEquations(equationA []float64, equationB []float64) (float64, float64) {
@@ -31,7 +31,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	tokens := 0.0
+	tokens, conversionError := 0.0, 10000000000000.0
 	for inputScanner.Scan() {
 		equationA, equationB := []float64{}, []float64{} // Ax + By = C
 		for i := 0; i < 3; i++ {
@@ -48,6 +48,8 @@ func main() {
 			}
 			inputScanner.Scan()
 		}
+		equationA[2] += conversionError
+		equationB[2] += conversionError
 		pushesA, pushesB := solveEquations(equationA, equationB)
 		if isPushNum(pushesA) && isPushNum(pushesB) {
 			tokens += pushesA*3 + pushesB
