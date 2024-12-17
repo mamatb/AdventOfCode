@@ -67,8 +67,9 @@ func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) 
 					diskmap[space.index+i] = diskmap[file.index+i]
 					diskmap[file.index+i] = -1
 				}
-				diskSpaces[spaceIdx] = diskSpace{index: space.index + file.size,
-					size: space.size - file.size}
+				diskSpaces[spaceIdx] = diskSpace{
+					index: space.index + file.size,
+					size:  space.size - file.size}
 				break
 			}
 		}
