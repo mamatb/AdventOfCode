@@ -31,7 +31,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	tokens, conversionError := 0.0, 10000000000000.0
+	tokens, conversionError := 0.0, 10_000_000_000_000.0
 	for inputScanner.Scan() {
 		equationA, equationB := []float64{}, []float64{} // Ax + By = C
 		for i := 0; i < 3; i++ {
