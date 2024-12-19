@@ -16,13 +16,13 @@ func main() {
 	} else {
 		panic(err)
 	}
-	mulRegexp, err := regexp.Compile(`mul\(([0-9]{1,3})\,([0-9]{1,3})\)`)
+	mulExp, err := regexp.Compile(`mul\(([0-9]{1,3})\,([0-9]{1,3})\)`)
 	if err != nil {
 		panic(err)
 	}
 	result := 0
 	for inputScanner.Scan() {
-		for _, mul := range mulRegexp.FindAllStringSubmatch(inputScanner.Text(), -1) {
+		for _, mul := range mulExp.FindAllStringSubmatch(inputScanner.Text(), -1) {
 			mulNum := 1
 			if mulNum1, err := strconv.Atoi(mul[1]); err == nil {
 				mulNum *= mulNum1

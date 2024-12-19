@@ -47,8 +47,8 @@ func main() {
 	resultCalibration := 0
 	for inputScanner.Scan() {
 		equation, operators := strings.Split(inputScanner.Text(), ": "), []int{}
-		for _, numString := range strings.Split(equation[1], " ") {
-			if num, err := strconv.Atoi(numString); err == nil {
+		for _, numStr := range strings.Split(equation[1], " ") {
+			if num, err := strconv.Atoi(numStr); err == nil {
 				operators = append(operators, num)
 			} else {
 				panic(err)

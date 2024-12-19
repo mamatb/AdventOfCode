@@ -27,7 +27,7 @@ func main() {
 	} else {
 		panic(err)
 	}
-	opRegexp, err := regexp.Compile(`[^:]+: X[\+=]([0-9]+), Y[\+=]([0-9]+)`)
+	opExp, err := regexp.Compile(`[^:]+: X[\+=]([0-9]+), Y[\+=]([0-9]+)`)
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func main() {
 	for inputScanner.Scan() {
 		equationA, equationB := []float64{}, []float64{} // Ax + By = C
 		for i := 0; i < 3; i++ {
-			operators := opRegexp.FindStringSubmatch(inputScanner.Text())[1:]
+			operators := opExp.FindStringSubmatch(inputScanner.Text())[1:]
 			if op, err := strconv.ParseFloat(operators[0], 64); err == nil {
 				equationA = append(equationA, op)
 			} else {
