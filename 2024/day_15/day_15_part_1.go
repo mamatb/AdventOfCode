@@ -12,30 +12,34 @@ type position struct {
 	col int
 }
 
-func moveRobot(rowDelta int, colDelta int, robot position,
-	boxes map[position]bool) (position, map[position]bool) {
-	robot.row, robot.col = robot.row+rowDelta, robot.col+colDelta
-	if boxes[robot] {
-		delete(boxes, robot)
-		boxNew := position{row: robot.row + rowDelta, col: robot.col + colDelta}
-		for boxes[boxNew] {
-			boxNew.row, boxNew.col = boxNew.row+rowDelta, boxNew.col+colDelta
-		}
-		boxes[boxNew] = true
-	}
-	return robot, boxes
+func movedPos(pos position, rDelta int, cDelta int) position {
+	return position{row: pos.row + rDelta, col: pos.col + cDelta}
 }
 
-func canMoveRobot(rowDelta int, colDelta int, robot position,
+func canMoveRobot(rDelta int, cDelta int, robot position,
 	boxes map[position]bool, walls map[position]bool) bool {
-	robot.row, robot.col = robot.row+rowDelta, robot.col+colDelta
+	robot = movedPos(robot, rDelta, cDelta)
 	for !walls[robot] {
 		if !boxes[robot] {
 			return true
 		}
-		robot.row, robot.col = robot.row+rowDelta, robot.col+colDelta
+		robot = movedPos(robot, rDelta, cDelta)
 	}
 	return false
+}
+
+func moveRobot(rDelta int, cDelta int, robot position,
+	boxes map[position]bool) (position, map[position]bool) {
+	robot = movedPos(robot, rDelta, cDelta)
+	if boxes[robot] {
+		delete(boxes, robot)
+		boxNew := movedPos(robot, rDelta, cDelta)
+		for boxes[boxNew] {
+			boxNew = movedPos(boxNew, rDelta, cDelta)
+		}
+		boxes[boxNew] = true
+	}
+	return robot, boxes
 }
 
 func main() {
@@ -67,19 +71,19 @@ func main() {
 	}
 	for inputScanner.Scan() {
 		for _, movement := range strings.Split(inputScanner.Text(), "") {
-			rowDelta, colDelta := 0, 0
+			rDelta, cDelta := 0, 0
 			switch movement {
 			case "^":
-				rowDelta -= 1
+				rDelta -= 1
 			case ">":
-				colDelta += 1
+				cDelta += 1
 			case "v":
-				rowDelta += 1
+				rDelta += 1
 			case "<":
-				colDelta -= 1
+				cDelta -= 1
 			}
-			if canMoveRobot(rowDelta, colDelta, robot, boxes, walls) {
-				robot, boxes = moveRobot(rowDelta, colDelta, robot, boxes)
+			if canMoveRobot(rDelta, cDelta, robot, boxes, walls) {
+				robot, boxes = moveRobot(rDelta, cDelta, robot, boxes)
 			}
 		}
 	}
