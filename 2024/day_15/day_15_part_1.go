@@ -16,30 +16,24 @@ func movedPos(pos position, rDelta int, cDelta int) position {
 	return position{row: pos.row + rDelta, col: pos.col + cDelta}
 }
 
-func canMoveRobot(rDelta int, cDelta int, robot position,
-	boxes map[position]bool, walls map[position]bool) bool {
-	robot = movedPos(robot, rDelta, cDelta)
-	for !walls[robot] {
-		if !boxes[robot] {
-			return true
-		}
-		robot = movedPos(robot, rDelta, cDelta)
+func moveRobot(rDelta int, cDelta int, robot position, boxes map[position]bool,
+	walls map[position]bool) (position, map[position]bool) {
+	robotMoved := movedPos(robot, rDelta, cDelta)
+	if walls[robotMoved] {
+		return robot, boxes
 	}
-	return false
-}
-
-func moveRobot(rDelta int, cDelta int, robot position,
-	boxes map[position]bool) (position, map[position]bool) {
-	robot = movedPos(robot, rDelta, cDelta)
-	if boxes[robot] {
-		delete(boxes, robot)
-		boxNew := movedPos(robot, rDelta, cDelta)
-		for boxes[boxNew] {
-			boxNew = movedPos(boxNew, rDelta, cDelta)
+	if boxes[robotMoved] {
+		boxMoved := movedPos(robotMoved, rDelta, cDelta)
+		for boxes[boxMoved] {
+			boxMoved = movedPos(boxMoved, rDelta, cDelta)
 		}
-		boxes[boxNew] = true
+		if walls[boxMoved] {
+			return robot, boxes
+		}
+		delete(boxes, robotMoved)
+		boxes[boxMoved] = true
 	}
-	return robot, boxes
+	return robotMoved, boxes
 }
 
 func main() {
@@ -82,9 +76,7 @@ func main() {
 			case "<":
 				cDelta -= 1
 			}
-			if canMoveRobot(rDelta, cDelta, robot, boxes, walls) {
-				robot, boxes = moveRobot(rDelta, cDelta, robot, boxes)
-			}
+			robot, boxes = moveRobot(rDelta, cDelta, robot, boxes, walls)
 		}
 	}
 	for box := range boxes {
