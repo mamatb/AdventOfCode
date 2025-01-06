@@ -35,6 +35,20 @@ func getNextDirs(dir direction) []direction {
 	}
 }
 
+func getNeighbours(pos position, walls map[position]bool) []position {
+	neighbours, neighboursPot := []position{}, []position{
+		{row: pos.row - 1, col: pos.col}, // north
+		{row: pos.row, col: pos.col + 1}, // east
+		{row: pos.row + 1, col: pos.col}, // south
+		{row: pos.row, col: pos.col - 1}} // west
+	for _, neighbour := range neighboursPot {
+		if !walls[neighbour] {
+			neighbours = append(neighbours, neighbour)
+		}
+	}
+	return neighbours
+}
+
 func getScores(start position, walls map[position]bool) map[position]int {
 	scores := map[position]int{start: 0}
 	sit, sitPending := situation{}, []situation{{
@@ -63,6 +77,41 @@ func getScores(start position, walls map[position]bool) map[position]int {
 	return scores
 }
 
+func getBestPaths(start position, end position, walls map[position]bool,
+	scores map[position]int) map[position]bool {
+	bestPaths := map[position]bool{start: true, end: true}
+	pos, posPending := position{}, []position{end}
+	for len(posPending) > 0 {
+		pos, posPending = posPending[0], posPending[1:]
+		for _, posNext := range getNeighbours(pos, walls) {
+			scoreDelta := scores[pos] - scores[posNext]
+			if scoreDelta == 1 || scoreDelta == 1001 {
+				bestPaths[posNext] = true
+				posPending = append(posPending, posNext)
+			} else if scoreDelta > 0 {
+				posNextNext := getNextPos(posNext, direction{
+					rDelta: posNext.row - pos.row,
+					cDelta: posNext.col - pos.col})
+				scoreDelta = scores[pos] - scores[posNextNext]
+				if scoreDelta == 2 || scoreDelta == 1002 {
+					bestPaths[posNext], bestPaths[posNextNext] = true, true
+					posPending = append(posPending, posNextNext)
+				}
+			} else {
+				posPrev := getNextPos(pos, direction{
+					rDelta: pos.row - posNext.row,
+					cDelta: pos.col - posNext.col})
+				scoreDelta = scores[posPrev] - scores[posNext]
+				if (scoreDelta == 2 || scoreDelta == 1002) && bestPaths[posPrev] {
+					bestPaths[posNext] = true
+					posPending = append(posPending, posNext)
+				}
+			}
+		}
+	}
+	return bestPaths
+}
+
 func main() {
 	var inputScanner *bufio.Scanner
 	if input, err := os.Open("day_16.txt"); err == nil {
@@ -86,5 +135,6 @@ func main() {
 		row += 1
 	}
 	scores := getScores(start, walls)
-	fmt.Println(scores[end])
+	bestPaths := getBestPaths(start, end, walls, scores)
+	fmt.Println(len(bestPaths))
 }
