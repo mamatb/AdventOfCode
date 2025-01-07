@@ -84,6 +84,9 @@ func getBestPaths(start position, end position, walls map[position]bool,
 	for len(posPending) > 0 {
 		pos, posPending = posPending[0], posPending[1:]
 		for _, posNext := range getNeighbours(pos, walls) {
+			if bestPaths[posNext] {
+				continue
+			}
 			scoreDelta := scores[pos] - scores[posNext]
 			if scoreDelta == 1 || scoreDelta == 1001 {
 				bestPaths[posNext] = true
