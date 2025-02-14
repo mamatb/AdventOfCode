@@ -28,13 +28,13 @@ func nextPosDir(guardPos position, guardDir int, obstacles map[position]bool) (
 	guardPosBackup := guardPos
 	switch guardDir {
 	case north:
-		guardPos.row -= 1
+		guardPos.row--
 	case east:
-		guardPos.col += 1
+		guardPos.col++
 	case south:
-		guardPos.row += 1
+		guardPos.row++
 	default: // west
-		guardPos.col -= 1
+		guardPos.col--
 	}
 	if obstacles[guardPos] {
 		guardPos, guardDir = guardPosBackup, (guardDir+1)%4
@@ -61,10 +61,10 @@ func main() {
 				obstacles[position{row: mapRows, col: col}] = true
 			}
 			if mapRows == 0 {
-				mapCols += 1
+				mapCols++
 			}
 		}
-		mapRows += 1
+		mapRows++
 	}
 	for posInMap(guardPos, mapRows, mapCols) {
 		visited[guardPos] = true

@@ -83,7 +83,7 @@ func main() {
 				end.row, end.col = row, col
 			}
 		}
-		row += 1
+		row++
 	}
 	scores := getScores(start, walls)
 	fmt.Println(scores[end])

@@ -20,12 +20,12 @@ func main() {
 	for inputScanner.Scan() {
 		locations := strings.Split(inputScanner.Text(), "   ")
 		if leftLocation, err := strconv.Atoi(locations[0]); err == nil {
-			leftLocations[leftLocation] += 1
+			leftLocations[leftLocation]++
 		} else {
 			panic(err)
 		}
 		if rightLocation, err := strconv.Atoi(locations[1]); err == nil {
-			rightLocations[rightLocation] += 1
+			rightLocations[rightLocation]++
 		} else {
 			panic(err)
 		}

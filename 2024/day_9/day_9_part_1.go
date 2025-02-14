@@ -20,7 +20,7 @@ func expandDiskmap(diskmap []int, input string) []int {
 				for i := 0; i < digit; i++ {
 					diskmap = append(diskmap, fileId)
 				}
-				fileId += 1
+				fileId++
 			}
 		} else {
 			panic(err)
@@ -36,11 +36,11 @@ func defragDiskmap(diskmap []int) []int {
 		if diskmap[left] == -1 {
 			if diskmap[right] != -1 {
 				diskmap[left], diskmap[right] = diskmap[right], diskmap[left]
-				left += 1
+				left++
 			}
-			right -= 1
+			right--
 		} else {
-			left += 1
+			left++
 		}
 	}
 	return diskmap

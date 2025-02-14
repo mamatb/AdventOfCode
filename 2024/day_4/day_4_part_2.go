@@ -57,12 +57,12 @@ func main() {
 				positionsA = append(positionsA, position{row: row, col: col})
 			}
 		}
-		row += 1
+		row++
 	}
 	for _, posA := range positionsA {
 		if (masDiagonal(posA, wordSearch) || masDiagonalRev(posA, wordSearch)) &&
 			(masAntidiag(posA, wordSearch) || masAntidiagRev(posA, wordSearch)) {
-			xmasCount += 1
+			xmasCount++
 		}
 	}
 	fmt.Println(xmasCount)

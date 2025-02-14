@@ -108,7 +108,7 @@ func main() {
 	}
 	for !existsRobotRow(16, robotsByPos, cols) {
 		robotsByPos = moveRobots(robotsByPos, rows, cols)
-		seconds += 1
+		seconds++
 	}
 	plotRobots(robotsByPos, rows, cols)
 	fmt.Println(seconds)

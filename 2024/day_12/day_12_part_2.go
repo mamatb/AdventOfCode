@@ -76,7 +76,7 @@ func getPrice(region map[position]bool) int {
 			indexIn:    border.indexIn,
 			indexOut:   border.indexOut,
 			location:   border.location + 1}] {
-			sides += 1
+			sides++
 		}
 	}
 	return area * sides

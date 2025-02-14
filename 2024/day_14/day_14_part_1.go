@@ -20,16 +20,16 @@ func addRobot(robotsByQuad []int, pos position, rows int, cols int) []int {
 	case -1:
 		switch cmp.Compare(pos.col, midCol) {
 		case -1:
-			robotsByQuad[0] += 1
+			robotsByQuad[0]++
 		case 1:
-			robotsByQuad[1] += 1
+			robotsByQuad[1]++
 		}
 	case 1:
 		switch cmp.Compare(pos.col, midCol) {
 		case -1:
-			robotsByQuad[2] += 1
+			robotsByQuad[2]++
 		case 1:
-			robotsByQuad[3] += 1
+			robotsByQuad[3]++
 		}
 	}
 	return robotsByQuad

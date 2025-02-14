@@ -49,7 +49,7 @@ func main() {
 			}
 		}
 		if isIncreasing(report) || isDecreasing(report) {
-			safeReports += 1
+			safeReports++
 		}
 	}
 	fmt.Println(safeReports)

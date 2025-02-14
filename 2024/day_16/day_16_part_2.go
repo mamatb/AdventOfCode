@@ -135,7 +135,7 @@ func main() {
 				end.row, end.col = row, col
 			}
 		}
-		row += 1
+		row++
 	}
 	scores := getScores(start, walls)
 	bestPaths := getBestPaths(start, end, walls, scores)

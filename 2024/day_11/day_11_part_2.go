@@ -48,7 +48,7 @@ func main() {
 		stonesLen = append(stonesLen, 0)
 		stones := map[string]int{}
 		for _, stone := range strings.Split(inputScanner.Text(), " ") {
-			stones[stone] += 1
+			stones[stone]++
 		}
 		for i := 0; i < blinks; i++ {
 			stones = blink(stones)

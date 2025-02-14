@@ -85,32 +85,32 @@ func main() {
 				positionsX = append(positionsX, position{row: row, col: col})
 			}
 		}
-		row += 1
+		row++
 	}
 	for _, posX := range positionsX {
 		if xmasHorizontal(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 		if xmasHorizontalRev(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 		if xmasVertical(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 		if xmasVerticalRev(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 		if xmasDiagonal(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 		if xmasDiagonalRev(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 		if xmasAntidiag(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 		if xmasAntidiagRev(posX, wordSearch) {
-			xmasCount += 1
+			xmasCount++
 		}
 	}
 	fmt.Println(xmasCount)

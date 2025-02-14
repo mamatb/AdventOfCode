@@ -57,10 +57,10 @@ func main() {
 				antennasByFreq[freq] = append(antennasByFreq[freq], freqPos)
 			}
 			if mapRows == 0 {
-				mapCols += 1
+				mapCols++
 			}
 		}
-		mapRows += 1
+		mapRows++
 	}
 	for _, antennas := range antennasByFreq {
 		antinodes = addAntinodes(antinodes, antennas, mapRows, mapCols)

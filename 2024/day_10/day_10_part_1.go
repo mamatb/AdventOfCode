@@ -24,10 +24,10 @@ func getScore(trailhead position, topomap [][]int) int {
 		for i := 0; i < positionsLen; i++ {
 			pos, positions = positions[0], positions[1:]
 			posReachables := []position{pos, pos, pos, pos}
-			posReachables[0].row -= 1 // north
-			posReachables[1].col += 1 // east
-			posReachables[2].row += 1 // south
-			posReachables[3].col -= 1 // west
+			posReachables[0].row-- // north
+			posReachables[1].col++ // east
+			posReachables[2].row++ // south
+			posReachables[3].col-- // west
 			for _, reachable := range posReachables {
 				if posInMap(reachable, len(topomap), len(topomap[0])) &&
 					topomap[reachable.row][reachable.col] == height+1 &&
@@ -63,7 +63,7 @@ func main() {
 				panic(err)
 			}
 		}
-		row += 1
+		row++
 	}
 	for _, trailhead := range trailheads {
 		score += getScore(trailhead, topomap)

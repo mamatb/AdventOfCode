@@ -127,20 +127,20 @@ func main() {
 				robot.row, robot.col = row, col*2
 			}
 		}
-		row += 1
+		row++
 	}
 	for inputScanner.Scan() {
 		for _, movement := range strings.Split(inputScanner.Text(), "") {
 			rDelta, cDelta := 0, 0
 			switch movement {
 			case "^":
-				rDelta -= 1
+				rDelta--
 			case ">":
-				cDelta += 1
+				cDelta++
 			case "v":
-				rDelta += 1
+				rDelta++
 			case "<":
-				cDelta -= 1
+				cDelta--
 			}
 			robot, boxes = moveRobot(rDelta, cDelta, robot, boxes, walls)
 		}

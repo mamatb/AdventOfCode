@@ -48,7 +48,7 @@ func getPrice(region map[position]bool) int {
 		perimeter += 4
 		for _, posN := range getNeighbours(pos) {
 			if region[posN] {
-				perimeter -= 1
+				perimeter--
 			}
 		}
 	}

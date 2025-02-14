@@ -37,7 +37,7 @@ func expandDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace,
 				for i := 0; i < digit; i++ {
 					diskmap = append(diskmap, fileId)
 				}
-				fileId += 1
+				fileId++
 			}
 		} else {
 			panic(err)
