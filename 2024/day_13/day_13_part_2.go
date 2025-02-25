@@ -34,7 +34,7 @@ func main() {
 	tokens, conversionError := 0.0, 10_000_000_000_000.0
 	for inputScanner.Scan() {
 		equationA, equationB := []float64{}, []float64{} // Ax + By = C
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			operators := opExp.FindStringSubmatch(inputScanner.Text())[1:]
 			if op, err := strconv.ParseFloat(operators[0], 64); err == nil {
 				equationA = append(equationA, op)

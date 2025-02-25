@@ -50,7 +50,7 @@ func main() {
 		for _, stone := range strings.Split(inputScanner.Text(), " ") {
 			stones[stone]++
 		}
-		for i := 0; i < blinks; i++ {
+		for range blinks {
 			stones = blink(stones)
 		}
 		for _, stoneCount := range stones {

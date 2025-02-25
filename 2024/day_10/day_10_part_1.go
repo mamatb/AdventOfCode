@@ -20,8 +20,8 @@ func posInMap(pos position, mapRows int, mapCols int) bool {
 func getScore(trailhead position, topomap [][]int) int {
 	pos, positions, positionsLen := position{}, []position{trailhead}, 1
 	positionsReached := map[position]bool{trailhead: true}
-	for height := 0; height < 9; height++ {
-		for i := 0; i < positionsLen; i++ {
+	for height := range 9 {
+		for range positionsLen {
 			pos, positions = positions[0], positions[1:]
 			posReachables := []position{pos, pos, pos, pos}
 			posReachables[0].row-- // north

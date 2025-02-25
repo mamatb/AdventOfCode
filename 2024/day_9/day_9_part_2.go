@@ -28,13 +28,13 @@ func expandDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace,
 			if free {
 				diskSpaces = append(diskSpaces,
 					diskSpace{index: len(diskmap), size: digit})
-				for i := 0; i < digit; i++ {
+				for range digit {
 					diskmap = append(diskmap, -1)
 				}
 			} else {
 				diskFiles = append(diskFiles,
 					diskFile{fileId: fileId, index: len(diskmap), size: digit})
-				for i := 0; i < digit; i++ {
+				for range digit {
 					diskmap = append(diskmap, fileId)
 				}
 				fileId++
@@ -55,7 +55,7 @@ func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) 
 				break
 			}
 			if file.size == space.size {
-				for i := 0; i < file.size; i++ {
+				for i := range file.size {
 					diskmap[space.index+i] = diskmap[file.index+i]
 					diskmap[file.index+i] = -1
 				}
@@ -63,7 +63,7 @@ func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) 
 				break
 			}
 			if file.size < space.size {
-				for i := 0; i < file.size; i++ {
+				for i := range file.size {
 					diskmap[space.index+i] = diskmap[file.index+i]
 					diskmap[file.index+i] = -1
 				}

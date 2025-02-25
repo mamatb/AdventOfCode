@@ -13,11 +13,11 @@ func expandDiskmap(diskmap []int, input string) []int {
 	for _, digitString := range strings.Split(input, "") {
 		if digit, err := strconv.Atoi(digitString); err == nil {
 			if free {
-				for i := 0; i < digit; i++ {
+				for range digit {
 					diskmap = append(diskmap, -1)
 				}
 			} else {
-				for i := 0; i < digit; i++ {
+				for range digit {
 					diskmap = append(diskmap, fileId)
 				}
 				fileId++

@@ -45,7 +45,7 @@ func nextPosDir(guardPos position, guardDir int, obstacles map[position]bool) (
 func loopInMap(mapRows int, mapCols int, guardPos position, guardDir int,
 	obstacles map[position]bool) bool {
 	visitedByDir := []map[position]bool{}
-	for i := 0; i < 4; i++ {
+	for range 4 {
 		visitedByDir = append(visitedByDir, map[position]bool{})
 	}
 	for posInMap(guardPos, mapRows, mapCols) {

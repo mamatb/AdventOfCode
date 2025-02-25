@@ -61,8 +61,8 @@ func moveRobots(robotsByPos map[position][]bathRobot, rows int,
 }
 
 func plotRobots(robotsByPos map[position][]bathRobot, rows int, cols int) {
-	for row := 0; row < rows; row++ {
-		for col := 0; col < cols; col++ {
+	for row := range rows {
+		for col := range cols {
 			if len(robotsByPos[position{row: row, col: col}]) > 0 {
 				fmt.Print("#")
 			} else {
