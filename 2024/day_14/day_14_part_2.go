@@ -23,8 +23,8 @@ func posInRobotRow(pos position, size int, robotsByPos map[position][]bathRobot,
 	if cols-pos.col < size {
 		return false
 	}
-	for col := pos.col; col < pos.col+size; col++ {
-		if len(robotsByPos[position{row: pos.row, col: col}]) == 0 {
+	for colDelta := range size {
+		if len(robotsByPos[position{row: pos.row, col: pos.col + colDelta}]) == 0 {
 			return false
 		}
 	}
