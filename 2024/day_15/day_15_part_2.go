@@ -50,10 +50,10 @@ func potMovedBoxes(rDelta int, cDelta int, posToMove position) []wideBox {
 		posBoxesMoved = append(posBoxesMoved, movedPos(posToMove, rDelta, 0))
 		posBoxesMoved = append(posBoxesMoved, movedPos(posToMove, rDelta, 1))
 	}
-	for posIdx := 1; posIdx < len(posBoxesMoved); posIdx++ {
+	for posIdx := range len(posBoxesMoved) - 1 {
 		boxesMoved = append(boxesMoved, wideBox{
-			left:  posBoxesMoved[posIdx-1],
-			right: posBoxesMoved[posIdx]})
+			left:  posBoxesMoved[posIdx],
+			right: posBoxesMoved[posIdx+1]})
 	}
 	return boxesMoved
 }
