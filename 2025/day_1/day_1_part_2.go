@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+func modulo(a int, b int) int {
+	return (a%b + b) % b
+}
+
 func main() {
 	var inputScanner *bufio.Scanner
 	if inputFile, err := os.Open("day_1.txt"); err != nil {
@@ -22,12 +26,15 @@ func main() {
 			panic(err)
 		} else if rotation[0] == 'L' {
 			dial -= rotationNum
+			if dial <= 0 && dial != -rotationNum {
+				password++
+			}
+			password += dial / -100
 		} else {
 			dial += rotationNum
+			password += dial / 100
 		}
-		if dial%100 == 0 {
-			password++
-		}
+		dial = modulo(dial, 100)
 	}
 	fmt.Println(password)
 }
