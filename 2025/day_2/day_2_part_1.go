@@ -40,7 +40,7 @@ func main() {
 				if left > right {
 					num += left - right
 				} else if left < right {
-					num = (left+1)*pow10Div + left
+					num = (left+1)*pow10Div + left + 1
 				} else {
 					invalidSum += num
 					num = (left+1)*pow10Div + right + 1

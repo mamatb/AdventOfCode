@@ -9,6 +9,21 @@ import (
 	"strings"
 )
 
+func checkPattern(num int, size int) bool {
+	numLog10, pow10Div := int(math.Log10(float64(num))), int(math.Pow10(size))
+	if (numLog10+1)%size != 0 {
+		return false
+	}
+	pending, chunk := num/pow10Div, num%pow10Div
+	for pending > 0 {
+		if pending%pow10Div != chunk {
+			return false
+		}
+		pending /= pow10Div
+	}
+	return pending == 0
+}
+
 func main() {
 	var inputScanner *bufio.Scanner
 	if inputFile, err := os.Open("day_2.txt"); err != nil {
@@ -29,20 +44,8 @@ func main() {
 				panic(err)
 			}
 			for num <= numMax {
-				numLog10 := int(math.Log10(float64(num)))
-				for size := 1; size <= (numLog10+1)/2; size++ {
-					if (numLog10+1)%size != 0 {
-						continue
-					}
-					pow10Div := int(math.Pow10(size))
-					pending, chunk := num/pow10Div, num%pow10Div
-					for pending > 0 {
-						if pending%pow10Div != chunk {
-							break
-						}
-						pending /= pow10Div
-					}
-					if pending == 0 {
+				for size := 1; int(math.Pow10(size)) < num; size++ {
+					if checkPattern(num, size) {
 						invalidSum += num
 						break
 					}
