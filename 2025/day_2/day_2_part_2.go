@@ -9,16 +9,6 @@ import (
 	"strings"
 )
 
-func intSlice(num int, size int) []int {
-	var sliced []int
-	pow10Div := int(math.Pow10(size))
-	for num > 0 {
-		sliced = append(sliced, num%pow10Div)
-		num /= pow10Div
-	}
-	return sliced
-}
-
 func main() {
 	var inputScanner *bufio.Scanner
 	if inputFile, err := os.Open("day_2.txt"); err != nil {
@@ -44,14 +34,15 @@ func main() {
 					if (numLog10+1)%size != 0 {
 						continue
 					}
-					numSlice, chunk := intSlice(num, size), 1
-					for chunk < len(numSlice) {
-						if numSlice[chunk-1] != numSlice[chunk] {
+					pow10Div := int(math.Pow10(size))
+					pending, chunk := num/pow10Div, num%pow10Div
+					for pending > 0 {
+						if pending%pow10Div != chunk {
 							break
 						}
-						chunk++
+						pending /= pow10Div
 					}
-					if chunk == len(numSlice) {
+					if pending == 0 {
 						invalidSum += num
 						break
 					}
