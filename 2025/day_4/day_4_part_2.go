@@ -12,29 +12,24 @@ type position struct {
 }
 
 func getAdjacent(pos position) []position {
-	var adjacent []position
-	adjacent = append(adjacent, position{pos.row - 1, pos.col - 1})
-	adjacent = append(adjacent, position{pos.row - 1, pos.col})
-	adjacent = append(adjacent, position{pos.row - 1, pos.col + 1})
-	adjacent = append(adjacent, position{pos.row, pos.col - 1})
-	adjacent = append(adjacent, position{pos.row, pos.col + 1})
-	adjacent = append(adjacent, position{pos.row + 1, pos.col - 1})
-	adjacent = append(adjacent, position{pos.row + 1, pos.col})
-	adjacent = append(adjacent, position{pos.row + 1, pos.col + 1})
-	return adjacent
+	return []position{
+		{row: pos.row - 1, col: pos.col - 1},
+		{row: pos.row - 1, col: pos.col},
+		{row: pos.row - 1, col: pos.col + 1},
+		{row: pos.row, col: pos.col - 1},
+		{row: pos.row, col: pos.col + 1},
+		{row: pos.row + 1, col: pos.col - 1},
+		{row: pos.row + 1, col: pos.col},
+		{row: pos.row + 1, col: pos.col + 1},
+	}
 }
 
-func outOfBounds(pos position, rows int, cols int) bool {
-	return pos.row < 0 || pos.row >= rows || pos.col < 0 || pos.col >= cols
-}
-
-func countAccessible(grid [][]bool, rolls map[position]bool) int {
+func countAccessible(rolls map[position]bool) int {
 	accessible := 0
 	for roll := range rolls {
 		adjacent := 0
-		for _, pos := range getAdjacent(position{roll.row, roll.col}) {
-			if !outOfBounds(pos, len(grid), len(grid[0])) &&
-				grid[pos.row][pos.col] {
+		for _, pos := range getAdjacent(roll) {
+			if rolls[pos] {
 				adjacent++
 			}
 			if adjacent >= 4 {
@@ -43,7 +38,6 @@ func countAccessible(grid [][]bool, rolls map[position]bool) int {
 		}
 		if adjacent < 4 {
 			accessible++
-			grid[roll.row][roll.col] = false
 			delete(rolls, roll)
 		}
 	}
@@ -58,22 +52,19 @@ func main() {
 		defer inputFile.Close()
 		inputScanner = bufio.NewScanner(inputFile)
 	}
-	var grid [][]bool
-	rolls := map[position]bool{}
+	rowIdx, rolls := 0, map[position]bool{}
 	for inputScanner.Scan() {
-		var row []bool
 		for colIdx, symbol := range inputScanner.Text() {
-			row = append(row, symbol == '@')
-			if row[len(row)-1] {
-				rolls[position{len(grid), colIdx}] = true
+			if symbol == '@' {
+				rolls[position{row: rowIdx, col: colIdx}] = true
 			}
 		}
-		grid = append(grid, row)
+		rowIdx++
 	}
-	result, accessible := 0, countAccessible(grid, rolls)
+	result, accessible := 0, countAccessible(rolls)
 	for accessible > 0 {
 		result += accessible
-		accessible = countAccessible(grid, rolls)
+		accessible = countAccessible(rolls)
 	}
 	fmt.Println(result)
 }

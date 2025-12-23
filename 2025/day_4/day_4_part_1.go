@@ -12,16 +12,16 @@ type position struct {
 }
 
 func getAdjacent(pos position) []position {
-	var adjacent []position
-	adjacent = append(adjacent, position{pos.row - 1, pos.col - 1})
-	adjacent = append(adjacent, position{pos.row - 1, pos.col})
-	adjacent = append(adjacent, position{pos.row - 1, pos.col + 1})
-	adjacent = append(adjacent, position{pos.row, pos.col - 1})
-	adjacent = append(adjacent, position{pos.row, pos.col + 1})
-	adjacent = append(adjacent, position{pos.row + 1, pos.col - 1})
-	adjacent = append(adjacent, position{pos.row + 1, pos.col})
-	adjacent = append(adjacent, position{pos.row + 1, pos.col + 1})
-	return adjacent
+	return []position{
+		{row: pos.row - 1, col: pos.col - 1},
+		{row: pos.row - 1, col: pos.col},
+		{row: pos.row - 1, col: pos.col + 1},
+		{row: pos.row, col: pos.col - 1},
+		{row: pos.row, col: pos.col + 1},
+		{row: pos.row + 1, col: pos.col - 1},
+		{row: pos.row + 1, col: pos.col},
+		{row: pos.row + 1, col: pos.col + 1},
+	}
 }
 
 func outOfBounds(pos position, rows int, cols int) bool {
@@ -36,7 +36,7 @@ func countAccessible(grid [][]bool) int {
 				continue
 			}
 			adjacent := 0
-			for _, pos := range getAdjacent(position{rowIdx, colIdx}) {
+			for _, pos := range getAdjacent(position{row: rowIdx, col: colIdx}) {
 				if !outOfBounds(pos, len(grid), len(grid[0])) &&
 					grid[pos.row][pos.col] {
 					adjacent++
