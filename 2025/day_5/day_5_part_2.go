@@ -27,21 +27,6 @@ func deduplicateRanges(freshRs []freshRange) []freshRange {
 	return freshRsDedup
 }
 
-func isContained(ingredient int, freshRs []freshRange) bool {
-	left, right := 0, len(freshRs)-1
-	for left <= right {
-		mid := (left + right) / 2
-		if freshRs[mid].start > ingredient {
-			right = mid - 1
-		} else if freshRs[mid].end < ingredient {
-			left = mid + 1
-		} else {
-			return true
-		}
-	}
-	return false
-}
-
 func main() {
 	var inputScanner *bufio.Scanner
 	if inputFile, err := os.Open("day_5.txt"); err != nil {
@@ -67,14 +52,9 @@ func main() {
 	slices.SortFunc(freshRs, func(a freshRange, b freshRange) int {
 		return a.start - b.start
 	})
-	freshRs = deduplicateRanges(freshRs)
 	freshIngredients := 0
-	for inputScanner.Scan() {
-		if ingredient, err := strconv.Atoi(inputScanner.Text()); err != nil {
-			panic(err)
-		} else if isContained(ingredient, freshRs) {
-			freshIngredients++
-		}
+	for _, freshR := range deduplicateRanges(freshRs) {
+		freshIngredients += freshR.end - freshR.start + 1
 	}
 	fmt.Println(freshIngredients)
 }
