@@ -84,11 +84,11 @@ func getPrice(region map[position]bool) int {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_12.txt"); err == nil {
+	if input, err := os.Open("day_12.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	garden, price := [][]string{}, 0
 	regions, inRegion := []map[position]bool{}, map[position]bool{}

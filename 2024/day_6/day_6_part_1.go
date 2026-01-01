@@ -44,11 +44,11 @@ func nextPosDir(guardPos position, guardDir int, obstacles map[position]bool) (
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_6.txt"); err == nil {
+	if input, err := os.Open("day_6.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	mapRows, mapCols, guardPos, guardDir := 0, 0, position{}, north
 	obstacles, visited := map[position]bool{}, map[position]bool{}

@@ -48,20 +48,20 @@ func isDecreasing(report []int, dampenerAvailable bool) bool {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_2.txt"); err == nil {
+	if input, err := os.Open("day_2.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	safeReports := 0
 	for inputScanner.Scan() {
 		report := []int{}
 		for _, levelString := range strings.Split(inputScanner.Text(), " ") {
-			if level, err := strconv.Atoi(levelString); err == nil {
-				report = append(report, level)
-			} else {
+			if level, err := strconv.Atoi(levelString); err != nil {
 				panic(err)
+			} else {
+				report = append(report, level)
 			}
 		}
 		if isIncreasing(report, true) || isDecreasing(report, true) {

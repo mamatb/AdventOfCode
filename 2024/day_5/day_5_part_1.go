@@ -23,11 +23,11 @@ func updateIsOrdered(update []string, rules map[string][]string) bool {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_5.txt"); err == nil {
+	if input, err := os.Open("day_5.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	middleNums, rules := 0, map[string][]string{}
 	inputScanner.Scan()
@@ -40,10 +40,10 @@ func main() {
 	for inputScanner.Scan() {
 		update := strings.Split(inputScanner.Text(), ",")
 		if updateIsOrdered(update, rules) {
-			if middleNum, err := strconv.Atoi(update[len(update)/2]); err == nil {
-				middleNums += middleNum
-			} else {
+			if middleNum, err := strconv.Atoi(update[len(update)/2]); err != nil {
 				panic(err)
+			} else {
+				middleNums += middleNum
 			}
 		}
 	}

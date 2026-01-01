@@ -37,11 +37,11 @@ func addRobot(robotsByQuad []int, pos position, rows int, cols int) []int {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_14.txt"); err == nil {
+	if input, err := os.Open("day_14.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	robotExp, err := regexp.Compile(`p=([0-9]+),([0-9]+) v=(-?[0-9]+),(-?[0-9]+)`)
 	if err != nil {
@@ -52,7 +52,9 @@ func main() {
 	for inputScanner.Scan() {
 		pos := position{}
 		for idx, numStr := range robotExp.FindStringSubmatch(inputScanner.Text())[1:] {
-			if num, err := strconv.Atoi(numStr); err == nil {
+			if num, err := strconv.Atoi(numStr); err != nil {
+				panic(err)
+			} else {
 				switch idx {
 				case 0:
 					pos.col = num
@@ -69,8 +71,6 @@ func main() {
 						pos.row += rows
 					}
 				}
-			} else {
-				panic(err)
 			}
 		}
 		robotsByQuad = addRobot(robotsByQuad, pos, rows, cols)

@@ -38,11 +38,11 @@ func moveRobot(rDelta int, cDelta int, robot position, boxes map[position]bool,
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_15.txt"); err == nil {
+	if input, err := os.Open("day_15.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	row, coordinates := 0, 0
 	robot, boxes, walls := position{}, map[position]bool{}, map[position]bool{}

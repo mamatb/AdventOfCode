@@ -117,11 +117,11 @@ func getBestPaths(start position, end position, walls map[position]bool,
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_16.txt"); err == nil {
+	if input, err := os.Open("day_16.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	row, start, end, walls := 0, position{}, position{}, map[position]bool{}
 	for inputScanner.Scan() {

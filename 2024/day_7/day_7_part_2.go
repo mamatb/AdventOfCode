@@ -44,28 +44,26 @@ func equationExists(result int, operators []int) bool {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_7.txt"); err == nil {
+	if input, err := os.Open("day_7.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	resultCalibration := 0
 	for inputScanner.Scan() {
 		equation, operators := strings.Split(inputScanner.Text(), ": "), []int{}
 		for _, numStr := range strings.Split(equation[1], " ") {
-			if num, err := strconv.Atoi(numStr); err == nil {
-				operators = append(operators, num)
-			} else {
+			if num, err := strconv.Atoi(numStr); err != nil {
 				panic(err)
+			} else {
+				operators = append(operators, num)
 			}
 		}
-		if result, err := strconv.Atoi(equation[0]); err == nil {
-			if equationExists(result, operators) {
-				resultCalibration += result
-			}
-		} else {
+		if result, err := strconv.Atoi(equation[0]); err != nil {
 			panic(err)
+		} else if equationExists(result, operators) {
+			resultCalibration += result
 		}
 	}
 	fmt.Println(resultCalibration)

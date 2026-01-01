@@ -24,10 +24,10 @@ func blink(stones []string) []string {
 			}
 			stonesBlink = append(stonesBlink, stoneLeft, stoneRight)
 		} else {
-			if stoneInt, err := strconv.Atoi(stone); err == nil {
-				stonesBlink = append(stonesBlink, strconv.Itoa(stoneInt*2024))
-			} else {
+			if stoneInt, err := strconv.Atoi(stone); err != nil {
 				panic(err)
+			} else {
+				stonesBlink = append(stonesBlink, strconv.Itoa(stoneInt*2024))
 			}
 		}
 	}
@@ -36,11 +36,11 @@ func blink(stones []string) []string {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_11.txt"); err == nil {
+	if input, err := os.Open("day_11.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	blinks, stonesLen := 25, []int{}
 	for inputScanner.Scan() {

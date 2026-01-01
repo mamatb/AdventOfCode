@@ -24,7 +24,9 @@ func expandDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace,
 	input string) ([]int, []diskFile, []diskSpace) {
 	fileId, free := 0, false
 	for _, digitString := range strings.Split(input, "") {
-		if digit, err := strconv.Atoi(digitString); err == nil {
+		if digit, err := strconv.Atoi(digitString); err != nil {
+			panic(err)
+		} else {
 			if free {
 				diskSpaces = append(diskSpaces,
 					diskSpace{index: len(diskmap), size: digit})
@@ -39,8 +41,6 @@ func expandDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace,
 				}
 				fileId++
 			}
-		} else {
-			panic(err)
 		}
 		free = !free
 	}
@@ -79,11 +79,11 @@ func defragDiskmap(diskmap []int, diskFiles []diskFile, diskSpaces []diskSpace) 
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_9.txt"); err == nil {
+	if input, err := os.Open("day_9.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	checksums := []int{}
 	for inputScanner.Scan() {

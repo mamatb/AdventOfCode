@@ -60,11 +60,11 @@ func loopInMap(mapRows int, mapCols int, guardPos position, guardDir int,
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_6.txt"); err == nil {
+	if input, err := os.Open("day_6.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	mapRows, mapCols, loops, guardPos, guardDir := 0, 0, 0, position{}, north
 	obstacles := map[position]bool{}

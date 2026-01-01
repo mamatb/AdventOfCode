@@ -70,11 +70,11 @@ func xmasAntidiagRev(posX position, matrix [][]string) bool {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_4.txt"); err == nil {
+	if input, err := os.Open("day_4.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	wordSearch, row, positionsX, xmasCount := [][]string{}, 0, []position{}, 0
 	for inputScanner.Scan() {

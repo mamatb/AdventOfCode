@@ -41,23 +41,23 @@ func getRating(trailhead position, topomap [][]int) int {
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_10.txt"); err == nil {
+	if input, err := os.Open("day_10.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	rating, row, topomap, trailheads := 0, 0, [][]int{}, []position{}
 	for inputScanner.Scan() {
 		topomap = append(topomap, []int{})
 		for col, heightString := range strings.Split(inputScanner.Text(), "") {
-			if height, err := strconv.Atoi(heightString); err == nil {
+			if height, err := strconv.Atoi(heightString); err != nil {
+				panic(err)
+			} else {
 				topomap[row] = append(topomap[row], height)
 				if height == 0 {
 					trailheads = append(trailheads, position{row: row, col: col})
 				}
-			} else {
-				panic(err)
 			}
 		}
 		row++

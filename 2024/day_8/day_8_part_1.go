@@ -42,11 +42,11 @@ func addAntinodes(antinodes map[position]bool, antennas []position, mapRows int,
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_8.txt"); err == nil {
+	if input, err := os.Open("day_8.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	antennasByFreq, antinodes := map[string][]position{}, map[position]bool{}
 	mapRows, mapCols := 0, 0

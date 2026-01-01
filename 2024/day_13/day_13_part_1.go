@@ -21,11 +21,11 @@ func solveEquations(equationA []float64, equationB []float64) (float64, float64)
 
 func main() {
 	var inputScanner *bufio.Scanner
-	if input, err := os.Open("day_13.txt"); err == nil {
+	if input, err := os.Open("day_13.txt"); err != nil {
+		panic(err)
+	} else {
 		defer input.Close()
 		inputScanner = bufio.NewScanner(input)
-	} else {
-		panic(err)
 	}
 	opExp, err := regexp.Compile(`[^:]+: X[\+=]([0-9]+), Y[\+=]([0-9]+)`)
 	if err != nil {
@@ -36,15 +36,15 @@ func main() {
 		equationA, equationB := []float64{}, []float64{} // Ax + By = C
 		for range 3 {
 			operators := opExp.FindStringSubmatch(inputScanner.Text())[1:]
-			if op, err := strconv.ParseFloat(operators[0], 64); err == nil {
+			if op, err := strconv.ParseFloat(operators[0], 64); err != nil {
+				panic(err)
+			} else {
 				equationA = append(equationA, op)
-			} else {
-				panic(err)
 			}
-			if op, err := strconv.ParseFloat(operators[1], 64); err == nil {
-				equationB = append(equationB, op)
-			} else {
+			if op, err := strconv.ParseFloat(operators[1], 64); err != nil {
 				panic(err)
+			} else {
+				equationB = append(equationB, op)
 			}
 			inputScanner.Scan()
 		}
