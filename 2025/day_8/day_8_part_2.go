@@ -28,7 +28,7 @@ func getDistance(boxA jBox, boxB jBox) float64 {
 		math.Pow(float64(boxA.z-boxB.z), 2))
 }
 
-func getNClosestPairs(boxes []jBox, n int) []jBoxPair {
+func getFarthestPairs(boxes []jBox) []jBoxPair {
 	var pairs []jBoxPair
 	for indexA, boxA := range boxes {
 		for _, boxB := range boxes[indexA+1:] {
@@ -40,47 +40,44 @@ func getNClosestPairs(boxes []jBox, n int) []jBoxPair {
 		}
 	}
 	slices.SortFunc(pairs, func(a jBoxPair, b jBoxPair) int {
-		if a.distance < b.distance {
+		if a.distance > b.distance {
 			return -1
-		} else if a.distance > b.distance {
+		} else if a.distance < b.distance {
 			return 1
 		}
 		return 0
 	})
-	return pairs[:n]
+	return pairs
 }
 
 func getCircuitRoot(circuitRoots map[jBox]jBox, box jBox) jBox {
-	if root, ok := circuitRoots[box]; !ok {
-		circuitRoots[box] = box
-		return box
-	} else {
-		for root != circuitRoots[root] {
-			root = circuitRoots[root]
-		}
-		return root
+	root := circuitRoots[box]
+	for root != circuitRoots[root] {
+		root = circuitRoots[root]
 	}
+	return root
 }
 
-func getNLargestCircuitSizes(closestPairs []jBoxPair, n int) []int {
-	circuitRoots := map[jBox]jBox{}
-	for _, pair := range closestPairs {
+func getLastPairToNCircuits(boxes []jBox, farthestPairs []jBoxPair, n int) jBoxPair {
+	circuitRoots, circuitRootsCount := map[jBox]jBox{}, len(boxes)
+	for _, box := range boxes {
+		circuitRoots[box] = box
+	}
+	var pair jBoxPair
+	for len(farthestPairs) > 0 && circuitRootsCount > n {
+		pair = farthestPairs[len(farthestPairs)-1]
+		farthestPairs = farthestPairs[:len(farthestPairs)-1]
 		rootA := getCircuitRoot(circuitRoots, pair.boxA)
 		rootB := getCircuitRoot(circuitRoots, pair.boxB)
 		if rootA != rootB {
 			circuitRoots[rootA] = rootB
+			circuitRootsCount--
 		}
 	}
-	circuitSizes := map[jBox]int{}
-	for box := range circuitRoots {
-		circuitSizes[getCircuitRoot(circuitRoots, box)] += 1
+	if circuitRootsCount > n {
+		return jBoxPair{}
 	}
-	var sizes []int
-	for _, size := range circuitSizes {
-		sizes = append(sizes, size)
-	}
-	slices.Sort(sizes)
-	return sizes[len(sizes)-n:]
+	return pair
 }
 
 func main() {
@@ -106,7 +103,7 @@ func main() {
 		}
 		boxes = append(boxes, box)
 	}
-	closestPairs := getNClosestPairs(boxes, 1000)
-	largestSizes := getNLargestCircuitSizes(closestPairs, 3)
-	fmt.Println(largestSizes[0] * largestSizes[1] * largestSizes[2])
+	farthestPairs := getFarthestPairs(boxes)
+	lastPair := getLastPairToNCircuits(boxes, farthestPairs, 1)
+	fmt.Println(lastPair.boxA.x * lastPair.boxB.x)
 }
