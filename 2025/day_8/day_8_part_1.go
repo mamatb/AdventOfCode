@@ -50,43 +50,28 @@ func getNClosestPairs(boxes []jBox, n int) []jBoxPair {
 	return pairs[:n]
 }
 
-func getCircuitRoots(pairs []jBoxPair) map[jBox]jBox {
-	circuitRoots := map[jBox]jBox{}
-	for _, pair := range pairs {
-		rootA, rootB, ok := jBox{}, jBox{}, false
-		if rootA, ok = circuitRoots[pair.boxA]; !ok {
-			rootA = pair.boxA
-			circuitRoots[pair.boxA] = rootA
-		} else {
-			for rootA != circuitRoots[rootA] {
-				rootA = circuitRoots[rootA]
-			}
-		}
-		if rootB, ok = circuitRoots[pair.boxB]; !ok {
-			rootB = pair.boxB
-			circuitRoots[pair.boxB] = rootB
-		} else {
-			for rootB != circuitRoots[rootB] {
-				rootB = circuitRoots[rootB]
-			}
-		}
-		if rootA.x <= rootB.x {
-			circuitRoots[rootB] = rootA
-		} else {
-			circuitRoots[rootA] = rootB
-		}
-	}
-	return circuitRoots
-}
-
-func getNLargestCircuitSizes(pairs []jBoxPair, n int) []int {
-	circuitRoots := getCircuitRoots(pairs)
-	circuitSizes := map[jBox]int{}
-	for _, root := range circuitRoots {
+func getCircuitRoot(circuitRoots map[jBox]jBox, box jBox) jBox {
+	if root, ok := circuitRoots[box]; !ok {
+		circuitRoots[box] = box
+		return box
+	} else {
 		for root != circuitRoots[root] {
 			root = circuitRoots[root]
 		}
-		circuitSizes[root] += 1
+		return root
+	}
+}
+
+func getNLargestCircuitSizes(pairs []jBoxPair, n int) []int {
+	circuitRoots := map[jBox]jBox{}
+	for _, pair := range pairs {
+		rootA := getCircuitRoot(circuitRoots, pair.boxA)
+		rootB := getCircuitRoot(circuitRoots, pair.boxB)
+		circuitRoots[rootA] = rootB
+	}
+	circuitSizes := map[jBox]int{}
+	for box := range circuitRoots {
+		circuitSizes[getCircuitRoot(circuitRoots, box)] += 1
 	}
 	var sizes []int
 	for _, size := range circuitSizes {
